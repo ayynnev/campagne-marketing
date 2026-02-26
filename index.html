@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lunar-X – Navette Spatiale Personnelle</title>
 
-    <!-- Typo futuriste -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;500;700&display=swap" rel="stylesheet">
 
     <style>
@@ -17,36 +16,38 @@
             overflow-x: hidden;
         }
 
-        /* -------------------- ÉTOILES ANIMÉES -------------------- */
+        /* -------------------- FOND ÉTOILÉ + LUNE -------------------- */
         .stars {
             position: fixed;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(white 1px, transparent 1px);
-            background-size: 3px 3px;
-            animation: starMove 120s linear infinite;
+            width: 100%;
+            height: 100%;
+            background: url("https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1600&q=80");
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4);
+            animation: starsMove 60s linear infinite;
             z-index: -3;
-            opacity: 0.4;
         }
 
-        @keyframes starMove {
-            from { transform: translate(0,0); }
-            to { transform: translate(-500px, -500px); }
+        @keyframes starsMove {
+            from { transform: scale(1); }
+            to { transform: scale(1.3); }
         }
 
-        /* -------------------- LUNE EN FOND (APPARITION) -------------------- */
         .moon {
             position: fixed;
-            bottom: -40%;
+            bottom: -30%;
             left: 50%;
             transform: translateX(-50%);
-            width: 200vw;
-            height: 200vw;
-            background: radial-gradient(circle, #fff 0%, #ddd 20%, #aaa 40%, #000 70%);
+            width: 180vw;
+            height: 180vw;
+            background: url("https://images.unsplash.com/photo-1543946602-8e8d64e8f9b0?auto=format&fit=crop&w=1600&q=80");
+            background-size: cover;
+            background-position: center;
             border-radius: 50%;
-            z-index: -2;
             opacity: 0;
             transition: opacity 2s ease-out, bottom 2s ease-out;
+            z-index: -2;
         }
 
         body.scrolled .moon {
@@ -169,7 +170,7 @@
 
         .product-img {
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             margin: 30px auto;
             display: block;
             filter: drop-shadow(0 0 20px white);
@@ -182,17 +183,25 @@
             100% { transform: translateY(0); }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* -------------------- CHATBOT IA -------------------- */
-        .chatbot {
+        /* -------------------- CHATBOT -------------------- */
+        .chatbot-toggle {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 280px;
+            background: white;
+            color: black;
+            padding: 12px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: 700;
+            z-index: 21;
+        }
+
+        .chatbot {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
             background: rgba(0,0,0,0.85);
             border: 1px solid #444;
             border-radius: 10px;
@@ -213,7 +222,7 @@
         }
 
         .chatbot-messages {
-            height: 200px;
+            height: 220px;
             overflow-y: auto;
             margin-bottom: 10px;
             font-size: 0.9rem;
@@ -240,19 +249,6 @@
             cursor: pointer;
         }
 
-        .chatbot-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            color: black;
-            padding: 12px 15px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: 700;
-            z-index: 21;
-        }
-
         footer {
             padding: 40px;
             text-align: center;
@@ -267,7 +263,6 @@
 <div class="stars"></div>
 <div class="moon"></div>
 
-<!-- NAVBAR -->
 <nav>
     <div class="logo">LUNAR-X</div>
     <div class="hamburger" onclick="toggleMenu()">
@@ -281,7 +276,6 @@
     <a href="#offer">Offre Limitée</a>
 </div>
 
-<!-- HERO -->
 <header id="hero">
     <h1>Explorez la Lune<br>Comme Jamais</h1>
     <p>Votre première navette spatiale personnelle. Le futur commence maintenant.</p>
@@ -289,16 +283,16 @@
     <div class="limited">Stock extrêmement limité</div>
 </header>
 
-<!-- PRODUCT -->
 <section id="product">
     <h2>Votre Navette Spatiale Personnelle</h2>
     <p>Propulsion ionique, cockpit panoramique, autonomie orbitale.  
        Une expérience de voyage lunaire totalement immersive.</p>
 
-    <img src="https://i.imgur.com/8QZ7Z9F.png" class="product-img" alt="Navette spatiale futuriste">
+    <img src="https://images.unsplash.com/photo-1581091012184-5c7b1f1b5a70?auto=format&fit=crop&w=1200&q=80" 
+         class="product-img" 
+         alt="Navette spatiale futuriste">
 </section>
 
-<!-- OFFER -->
 <section id="offer">
     <h2>Accès Anticipé – Réservations Ouvertes</h2>
     <p>Devenez l’un des premiers humains à voyager vers la Lune à bord de votre propre navette.</p>
@@ -307,7 +301,7 @@
     <a class="cta">Réserver Maintenant</a>
 </section>
 
-<!-- CHATBOT IA -->
+<!-- CHATBOT -->
 <div class="chatbot-toggle" onclick="toggleChat()">AI</div>
 
 <div class="chatbot" id="chatbot">
@@ -324,12 +318,10 @@
 </footer>
 
 <script>
-    /* MENU MOBILE */
     function toggleMenu() {
         document.getElementById("mobileMenu").classList.toggle("open");
     }
 
-    /* APPARITION DE LA LUNE AU SCROLL */
     window.addEventListener("scroll", () => {
         if (window.scrollY > 50) {
             document.body.classList.add("scrolled");
@@ -338,11 +330,11 @@
         }
     });
 
-    /* CHATBOT IA SIMPLE */
     function toggleChat() {
         document.getElementById("chatbot").classList.toggle("open");
     }
 
+    /* -------------------- CHATBOT INTELLIGENT -------------------- */
     function sendMessage() {
         const input = document.getElementById("chatInput");
         const messages = document.getElementById("chatMessages");
@@ -358,19 +350,25 @@
 
         const q = input.value.toLowerCase();
 
-        if (q.includes("lune")) {
-            botMsg.textContent = "🤖 LUNA : La Lune se situe à 384 400 km. Votre navette y accède en 6h.";
-        } else if (q.includes("sécurité")) {
-            botMsg.textContent = "🤖 LUNA : Les systèmes de sécurité incluent un bouclier thermique adaptatif et un pilote automatique d'urgence.";
-        } else if (q.includes("vitesse")) {
-            botMsg.textContent = "🤖 LUNA : Votre navette atteint 58 000 km/h en orbite stabilisée.";
-        } else {
-            botMsg.textContent = "🤖 LUNA : Je suis votre IA de bord. Posez-moi des questions sur l'espace ou votre navette.";
+        const responses = {
+            "lune": "La Lune se situe à 384 400 km. Votre navette y accède en environ 6 heures.",
+            "sécurité": "Votre navette dispose d’un bouclier thermique adaptatif et d’un pilote automatique d'urgence.",
+            "vitesse": "La vitesse de croisière atteint 58 000 km/h en orbite stabilisée.",
+            "oxygène": "Les réserves d’oxygène couvrent 72 heures de mission, avec recyclage intégré.",
+            "prix": "Le tarif d’accès anticipé est disponible uniquement sur demande privée.",
+            "départ": "Les départs se font depuis la base orbitale L‑01, accessible via ascenseur spatial."
+        };
+
+        let answer = "Je suis LUNA, votre IA de bord. Posez-moi des questions sur l’espace ou votre navette.";
+
+        for (let key in responses) {
+            if (q.includes(key)) answer = responses[key];
         }
 
+        botMsg.textContent = "🤖 LUNA : " + answer;
         messages.appendChild(botMsg);
-        messages.scrollTop = messages.scrollHeight;
 
+        messages.scrollTop = messages.scrollHeight;
         input.value = "";
     }
 </script>
