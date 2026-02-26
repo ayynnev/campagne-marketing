@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navette Lunaire Personnelle – Accès Anticipé</title>
+    <title>Lunar-X – Navette Spatiale Personnelle</title>
+
+    <!-- Typo futuriste -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;500;700&display=swap" rel="stylesheet">
 
     <style>
-        /* -------------------- GLOBAL -------------------- */
         body {
             margin: 0;
             font-family: 'Orbitron', sans-serif;
@@ -15,22 +17,41 @@
             overflow-x: hidden;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@300;500;700&display=swap');
-
-        /* -------------------- STARRY BACKGROUND -------------------- */
+        /* -------------------- ÉTOILES ANIMÉES -------------------- */
         .stars {
             position: fixed;
-            width: 100%;
-            height: 100%;
-            background: url('https://i.imgur.com/9aK7y7v.png');
-            background-size: cover;
-            animation: moveStars 60s linear infinite;
-            z-index: -2;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(white 1px, transparent 1px);
+            background-size: 3px 3px;
+            animation: starMove 120s linear infinite;
+            z-index: -3;
+            opacity: 0.4;
         }
 
-        @keyframes moveStars {
-            from { transform: translateY(0); }
-            to { transform: translateY(-2000px); }
+        @keyframes starMove {
+            from { transform: translate(0,0); }
+            to { transform: translate(-500px, -500px); }
+        }
+
+        /* -------------------- LUNE EN FOND (APPARITION) -------------------- */
+        .moon {
+            position: fixed;
+            bottom: -40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200vw;
+            height: 200vw;
+            background: radial-gradient(circle, #fff 0%, #ddd 20%, #aaa 40%, #000 70%);
+            border-radius: 50%;
+            z-index: -2;
+            opacity: 0;
+            transition: opacity 2s ease-out, bottom 2s ease-out;
+        }
+
+        body.scrolled .moon {
+            opacity: 0.25;
+            bottom: -10%;
         }
 
         /* -------------------- NAVBAR -------------------- */
@@ -69,7 +90,6 @@
             transition: 0.3s;
         }
 
-        /* Menu mobile */
         .mobile-menu {
             position: fixed;
             top: 0;
@@ -135,16 +155,16 @@
             background: #dcdcdc;
         }
 
-        /* -------------------- SECTIONS -------------------- */
-        section {
-            padding: 80px 20px;
-            text-align: center;
-        }
-
         .limited {
             color: #ff4f4f;
             font-weight: 700;
             margin-top: 10px;
+        }
+
+        /* -------------------- SECTIONS -------------------- */
+        section {
+            padding: 80px 20px;
+            text-align: center;
         }
 
         .product-img {
@@ -162,24 +182,82 @@
             100% { transform: translateY(0); }
         }
 
-        /* -------------------- ANIMATIONS -------------------- */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* -------------------- FOOTER -------------------- */
+        /* -------------------- CHATBOT IA -------------------- */
+        .chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 280px;
+            background: rgba(0,0,0,0.85);
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            z-index: 20;
+        }
+
+        .chatbot.open {
+            display: flex;
+        }
+
+        .chatbot-header {
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .chatbot-messages {
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .chatbot-input {
+            display: flex;
+            gap: 5px;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .chatbot-input button {
+            padding: 5px 10px;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            color: black;
+            padding: 12px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: 700;
+            z-index: 21;
+        }
+
         footer {
             padding: 40px;
             text-align: center;
             opacity: 0.6;
             font-size: 0.9rem;
-        }
-
-        /* Desktop */
-        @media (min-width: 768px) {
-            header h1 { font-size: 3.5rem; }
-            header p { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -187,6 +265,7 @@
 <body>
 
 <div class="stars"></div>
+<div class="moon"></div>
 
 <!-- NAVBAR -->
 <nav>
@@ -205,7 +284,7 @@
 <!-- HERO -->
 <header id="hero">
     <h1>Explorez la Lune<br>Comme Jamais</h1>
-    <p>La première navette spatiale personnelle, conçue pour les explorateurs du futur.</p>
+    <p>Votre première navette spatiale personnelle. Le futur commence maintenant.</p>
     <a class="cta" href="#offer">Accès Anticipé</a>
     <div class="limited">Stock extrêmement limité</div>
 </header>
@@ -228,13 +307,71 @@
     <a class="cta">Réserver Maintenant</a>
 </section>
 
+<!-- CHATBOT IA -->
+<div class="chatbot-toggle" onclick="toggleChat()">AI</div>
+
+<div class="chatbot" id="chatbot">
+    <div class="chatbot-header">IA de Bord – LUNA</div>
+    <div class="chatbot-messages" id="chatMessages"></div>
+    <div class="chatbot-input">
+        <input type="text" id="chatInput" placeholder="Posez une question...">
+        <button onclick="sendMessage()">OK</button>
+    </div>
+</div>
+
 <footer>
     © 2026 Lunar-X Technologies — Voyagez au-delà des limites.
 </footer>
 
 <script>
+    /* MENU MOBILE */
     function toggleMenu() {
         document.getElementById("mobileMenu").classList.toggle("open");
+    }
+
+    /* APPARITION DE LA LUNE AU SCROLL */
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+            document.body.classList.add("scrolled");
+        } else {
+            document.body.classList.remove("scrolled");
+        }
+    });
+
+    /* CHATBOT IA SIMPLE */
+    function toggleChat() {
+        document.getElementById("chatbot").classList.toggle("open");
+    }
+
+    function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const messages = document.getElementById("chatMessages");
+
+        if (!input.value.trim()) return;
+
+        const userMsg = document.createElement("div");
+        userMsg.textContent = "👨‍🚀 Vous : " + input.value;
+        messages.appendChild(userMsg);
+
+        const botMsg = document.createElement("div");
+        botMsg.style.marginTop = "5px";
+
+        const q = input.value.toLowerCase();
+
+        if (q.includes("lune")) {
+            botMsg.textContent = "🤖 LUNA : La Lune se situe à 384 400 km. Votre navette y accède en 6h.";
+        } else if (q.includes("sécurité")) {
+            botMsg.textContent = "🤖 LUNA : Les systèmes de sécurité incluent un bouclier thermique adaptatif et un pilote automatique d'urgence.";
+        } else if (q.includes("vitesse")) {
+            botMsg.textContent = "🤖 LUNA : Votre navette atteint 58 000 km/h en orbite stabilisée.";
+        } else {
+            botMsg.textContent = "🤖 LUNA : Je suis votre IA de bord. Posez-moi des questions sur l'espace ou votre navette.";
+        }
+
+        messages.appendChild(botMsg);
+        messages.scrollTop = messages.scrollHeight;
+
+        input.value = "";
     }
 </script>
 
