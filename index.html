@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaOne – Votre Première Fusée Personnelle</title>
+    <title>NovaOne – La Première Fusée Personnelle</title>
+
     <style>
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
-            background-color: #0a0f1f;
+            background-color: #05070f;
             color: #ffffff;
+            overflow-x: hidden;
         }
 
+        /* ---------- HERO ---------- */
         header {
-            background: url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
             height: 100vh;
+            background: url('https://images.unsplash.com/photo-1447433819943-74a20887a81e?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat fixed;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 0 20px;
             position: relative;
         }
 
@@ -39,20 +41,20 @@
         h1 {
             font-size: 4rem;
             margin: 0;
-            text-transform: uppercase;
             letter-spacing: 4px;
+            text-transform: uppercase;
         }
 
         .subtitle {
             font-size: 1.4rem;
-            margin: 20px 0 40px;
             max-width: 700px;
+            margin: 20px auto 40px;
         }
 
         .cta-btn {
             background: #ff6f3c;
             color: #fff;
-            padding: 15px 35px;
+            padding: 15px 40px;
             border-radius: 50px;
             font-size: 1.2rem;
             text-decoration: none;
@@ -63,12 +65,30 @@
             background: #ff8f63;
         }
 
+        /* ---------- SECTIONS ---------- */
         section {
-            padding: 80px 20px;
-            max-width: 1100px;
+            padding: 100px 20px;
+            max-width: 1200px;
             margin: auto;
         }
 
+        h2 {
+            text-align: center;
+            font-size: 2.6rem;
+            margin-bottom: 40px;
+        }
+
+        /* ---------- PARALLAX BLOCKS ---------- */
+        .parallax {
+            height: 60vh;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            margin: 80px 0;
+            border-radius: 12px;
+        }
+
+        /* ---------- FEATURES ---------- */
         .features {
             display: flex;
             flex-wrap: wrap;
@@ -77,10 +97,10 @@
         }
 
         .feature {
-            background: #11182f;
+            background: #0b0f1f;
             padding: 30px;
             border-radius: 12px;
-            width: 300px;
+            width: 320px;
             text-align: center;
         }
 
@@ -89,6 +109,18 @@
             font-size: 1.4rem;
         }
 
+        /* ---------- URGENCE ---------- */
+        .urgent-box {
+            background: linear-gradient(135deg, #ff3c3c, #ff6f3c);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            color: #fff;
+            font-size: 1.3rem;
+            margin-top: 40px;
+        }
+
+        /* ---------- TESTIMONIALS ---------- */
         .testimonials {
             display: flex;
             flex-wrap: wrap;
@@ -97,36 +129,47 @@
         }
 
         .testimonial {
-            background: #11182f;
+            background: #0b0f1f;
             padding: 25px;
             border-radius: 12px;
-            width: 300px;
+            width: 320px;
             font-style: italic;
         }
 
+        /* ---------- FOOTER ---------- */
         footer {
             text-align: center;
             padding: 40px 20px;
-            background: #050814;
+            background: #03040a;
             color: #aaa;
         }
     </style>
 </head>
 <body>
 
+<!-- HERO -->
 <header>
     <h1>NovaOne</h1>
-    <p class="subtitle">La première fusée personnelle conçue pour vous emmener au-delà des frontières de la Terre. Explorez l’espace comme jamais auparavant.</p>
-    <a href="#precommande" class="cta-btn">Précommander maintenant</a>
+    <p class="subtitle">La première fusée personnelle conçue pour les explorateurs modernes.  
+    Entrez dans l’ère du voyage spatial individuel.</p>
+    <a href="#precommande" class="cta-btn">Accès anticipé</a>
 </header>
 
-<section id="about">
-    <h2>Une révolution dans le voyage spatial</h2>
-    <p>NovaOne est la première fusée personnelle destinée au grand public. Grâce à une technologie de propulsion ionique de nouvelle génération, elle vous permet d’atteindre l’orbite basse en toute sécurité, avec un confort inégalé.</p>
+<!-- ABOUT -->
+<section>
+    <h2>Une nouvelle ère commence</h2>
+    <p style="text-align:center; max-width:800px; margin:auto;">
+        NovaOne est la première fusée personnelle accessible au public.  
+        Grâce à une propulsion ionique de nouvelle génération et une cabine panoramique renforcée,  
+        vous pouvez désormais atteindre l’orbite basse en toute sécurité.
+    </p>
 </section>
 
-<section id="features">
-    <h2>Caractéristiques principales</h2>
+<div class="parallax" style="background-image:url('https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&w=1950&q=80');"></div>
+
+<!-- FEATURES -->
+<section>
+    <h2>Technologie de pointe</h2>
     <div class="features">
         <div class="feature">
             <h3>Propulsion Ionique</h3>
@@ -134,7 +177,7 @@
         </div>
         <div class="feature">
             <h3>Cabine Panoramique</h3>
-            <p>Une vue à 360° sur la Terre et les étoiles grâce à un dôme en verre renforcé.</p>
+            <p>Un dôme en verre renforcé offrant une vue totale sur la Terre et les étoiles.</p>
         </div>
         <div class="feature">
             <h3>IA de Navigation</h3>
@@ -143,15 +186,18 @@
     </div>
 </section>
 
-<section id="testimonials">
-    <h2>Ils ont testé NovaOne</h2>
+<div class="parallax" style="background-image:url('https://images.unsplash.com/photo-1447433819943-74a20887a81e?auto=format&fit=crop&w=1950&q=80');"></div>
+
+<!-- TESTIMONIALS -->
+<section>
+    <h2>Ils ont déjà volé</h2>
     <div class="testimonials">
         <div class="testimonial">
-            “Une expérience absolument incroyable. Voir la Terre depuis l’espace est indescriptible.”
+            “Voir la Terre depuis l’espace… c’est un choc émotionnel. NovaOne rend cela possible.”
             <br><br>— Alex, pilote test
         </div>
         <div class="testimonial">
-            “La cabine est si confortable qu’on oublie qu’on est dans une fusée.”
+            “Une cabine si confortable qu’on oublie qu’on est dans une fusée.”
             <br><br>— Marie, astronaute amateur
         </div>
         <div class="testimonial">
@@ -161,10 +207,21 @@
     </div>
 </section>
 
+<!-- URGENCE -->
 <section id="precommande">
-    <h2>Précommandez votre NovaOne</h2>
-    <p>Les premières unités seront disponibles en édition limitée. Réservez dès maintenant votre place parmi les pionniers du voyage spatial personnel.</p>
-    <a href="#" class="cta-btn">Je précommande</a>
+    <h2>Accès anticipé – Édition Limitée</h2>
+    <p style="text-align:center; max-width:800px; margin:auto;">
+        Les premières unités de NovaOne seront produites en quantité extrêmement limitée.  
+        Rejoignez les pionniers du voyage spatial personnel.
+    </p>
+
+    <div class="urgent-box">
+        ⚠️ Stock limité : seules 50 unités disponibles pour l’accès anticipé.
+    </div>
+
+    <div style="text-align:center; margin-top:40px;">
+        <a href="#" class="cta-btn">Réserver maintenant</a>
+    </div>
 </section>
 
 <footer>
@@ -173,3 +230,4 @@
 
 </body>
 </html>
+
