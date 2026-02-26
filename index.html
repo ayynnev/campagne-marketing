@@ -6,6 +6,7 @@
     <title>NovaOne – La Première Fusée Personnelle</title>
 
     <style>
+        /* -------------------- GLOBAL -------------------- */
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
@@ -14,10 +15,56 @@
             overflow-x: hidden;
         }
 
-        /* ---------- HERO ---------- */
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* -------------------- NAVBAR -------------------- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+        }
+
+        nav .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        nav .menu {
+            display: flex;
+            gap: 25px;
+        }
+
+        nav .menu a {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        nav .menu a:hover {
+            opacity: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav .menu {
+                display: none;
+            }
+        }
+
+        /* -------------------- HERO -------------------- */
         header {
             height: 100vh;
-            background: url('https://images.unsplash.com/photo-1447433819943-74a20887a81e?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat fixed;
+            background: url('https://images.unsplash.com/photo-1447433819943-74a20887a81e?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -65,7 +112,7 @@
             background: #ff8f63;
         }
 
-        /* ---------- SECTIONS ---------- */
+        /* -------------------- SECTIONS -------------------- */
         section {
             padding: 100px 20px;
             max-width: 1200px;
@@ -78,7 +125,7 @@
             margin-bottom: 40px;
         }
 
-        /* ---------- PARALLAX BLOCKS ---------- */
+        /* -------------------- PARALLAX -------------------- */
         .parallax {
             height: 60vh;
             background-size: cover;
@@ -88,7 +135,7 @@
             border-radius: 12px;
         }
 
-        /* ---------- FEATURES ---------- */
+        /* -------------------- FEATURES -------------------- */
         .features {
             display: flex;
             flex-wrap: wrap;
@@ -104,23 +151,7 @@
             text-align: center;
         }
 
-        .feature h3 {
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-        }
-
-        /* ---------- URGENCE ---------- */
-        .urgent-box {
-            background: linear-gradient(135deg, #ff3c3c, #ff6f3c);
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            color: #fff;
-            font-size: 1.3rem;
-            margin-top: 40px;
-        }
-
-        /* ---------- TESTIMONIALS ---------- */
+        /* -------------------- TESTIMONIALS -------------------- */
         .testimonials {
             display: flex;
             flex-wrap: wrap;
@@ -136,87 +167,116 @@
             font-style: italic;
         }
 
-        /* ---------- FOOTER ---------- */
-        footer {
+        /* -------------------- URGENCE -------------------- */
+        .urgent-box {
+            background: linear-gradient(135deg, #ff3c3c, #ff6f3c);
+            padding: 30px;
+            border-radius: 12px;
             text-align: center;
-            padding: 40px 20px;
-            background: #03040a;
-            color: #aaa;
+            color: #fff;
+            font-size: 1.3rem;
+            margin-top: 40px;
+        }
+
+        /* -------------------- FADE-IN ANIMATIONS -------------------- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* -------------------- STARFIELD BACKGROUND -------------------- */
+        #stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
     </style>
 </head>
+
 <body>
 
-<!-- HERO -->
-<header>
+<canvas id="stars"></canvas>
+
+<nav>
+    <div class="logo">NovaOne</div>
+    <div class="menu">
+        <a href="#about">À propos</a>
+        <a href="#features">Caractéristiques</a>
+        <a href="#testimonials">Avis</a>
+        <a href="#precommande">Précommande</a>
+    </div>
+</nav>
+
+<header class="fade-in">
     <h1>NovaOne</h1>
-    <p class="subtitle">La première fusée personnelle conçue pour les explorateurs modernes.  
-    Entrez dans l’ère du voyage spatial individuel.</p>
+    <p class="subtitle">La première fusée personnelle conçue pour les explorateurs modernes.</p>
     <a href="#precommande" class="cta-btn">Accès anticipé</a>
 </header>
 
-<!-- ABOUT -->
-<section>
+<section id="about" class="fade-in">
     <h2>Une nouvelle ère commence</h2>
     <p style="text-align:center; max-width:800px; margin:auto;">
-        NovaOne est la première fusée personnelle accessible au public.  
-        Grâce à une propulsion ionique de nouvelle génération et une cabine panoramique renforcée,  
-        vous pouvez désormais atteindre l’orbite basse en toute sécurité.
+        NovaOne est la première fusée personnelle accessible au public. Grâce à une propulsion ionique de nouvelle génération et une cabine panoramique renforcée, vous pouvez désormais atteindre l’orbite basse en toute sécurité.
     </p>
 </section>
 
-<div class="parallax" style="background-image:url('https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&w=1950&q=80');"></div>
+<div class="parallax fade-in" style="background-image:url('https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&w=1950&q=80');"></div>
 
-<!-- FEATURES -->
-<section>
+<section id="features" class="fade-in">
     <h2>Technologie de pointe</h2>
     <div class="features">
-        <div class="feature">
+        <div class="feature fade-in">
             <h3>Propulsion Ionique</h3>
-            <p>Une technologie propre, silencieuse et ultra-efficace pour des voyages fluides.</p>
+            <p>Une technologie propre, silencieuse et ultra-efficace.</p>
         </div>
-        <div class="feature">
+        <div class="feature fade-in">
             <h3>Cabine Panoramique</h3>
-            <p>Un dôme en verre renforcé offrant une vue totale sur la Terre et les étoiles.</p>
+            <p>Un dôme en verre renforcé offrant une vue totale.</p>
         </div>
-        <div class="feature">
+        <div class="feature fade-in">
             <h3>IA de Navigation</h3>
-            <p>Un copilote intelligent qui vous guide et assure votre sécurité en continu.</p>
+            <p>Un copilote intelligent qui vous guide.</p>
         </div>
     </div>
 </section>
 
-<div class="parallax" style="background-image:url('https://images.unsplash.com/photo-1447433819943-74a20887a81e?auto=format&fit=crop&w=1950&q=80');"></div>
+<div class="parallax fade-in" style="background-image:url('https://images.unsplash.com/photo-1447433819943-74a20887a81e?auto=format&fit=crop&w=1950&q=80');"></div>
 
-<!-- TESTIMONIALS -->
-<section>
+<section id="testimonials" class="fade-in">
     <h2>Ils ont déjà volé</h2>
     <div class="testimonials">
-        <div class="testimonial">
-            “Voir la Terre depuis l’espace… c’est un choc émotionnel. NovaOne rend cela possible.”
-            <br><br>— Alex, pilote test
+        <div class="testimonial fade-in">
+            “Voir la Terre depuis l’espace… c’est un choc émotionnel.”
+            <br><br>— Alex
         </div>
-        <div class="testimonial">
+        <div class="testimonial fade-in">
             “Une cabine si confortable qu’on oublie qu’on est dans une fusée.”
-            <br><br>— Marie, astronaute amateur
+            <br><br>— Marie
         </div>
-        <div class="testimonial">
+        <div class="testimonial fade-in">
             “La navigation assistée rend le vol accessible à tous.”
-            <br><br>— Julien, ingénieur
+            <br><br>— Julien
         </div>
     </div>
 </section>
 
-<!-- URGENCE -->
-<section id="precommande">
+<section id="precommande" class="fade-in">
     <h2>Accès anticipé – Édition Limitée</h2>
     <p style="text-align:center; max-width:800px; margin:auto;">
-        Les premières unités de NovaOne seront produites en quantité extrêmement limitée.  
-        Rejoignez les pionniers du voyage spatial personnel.
+        Les premières unités de NovaOne seront produites en quantité extrêmement limitée.
     </p>
 
     <div class="urgent-box">
-        ⚠️ Stock limité : seules 50 unités disponibles pour l’accès anticipé.
+        ⚠️ Stock limité : seules 50 unités disponibles.
     </div>
 
     <div style="text-align:center; margin-top:40px;">
@@ -228,6 +288,62 @@
     © 2026 NovaOne – Tous droits réservés.
 </footer>
 
+<script>
+    /* -------------------- FADE-IN ON SCROLL -------------------- */
+    const fadeElements = document.querySelectorAll('.fade-in');
+
+    function handleScroll() {
+        fadeElements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 100) {
+                el.classList.add('visible');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    /* -------------------- STARFIELD ANIMATION -------------------- */
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    let w, h;
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const stars = [];
+    for (let i = 0; i < 200; i++) {
+        stars.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            size: Math.random() * 2,
+            speed: Math.random() * 0.5 + 0.2
+        });
+    }
+
+    function animateStars() {
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "white";
+
+        stars.forEach(s => {
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            s.y += s.speed;
+            if (s.y > h) s.y = 0;
+        });
+
+        requestAnimationFrame(animateStars);
+    }
+
+    animateStars();
+</script>
+
 </body>
 </html>
-
