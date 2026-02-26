@@ -1,846 +1,242 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>NovaOne — Fusée personnelle | Accès anticipé</title>
-<meta name="description" content="NovaOne — La première fusée personnelle. Accès anticipé, édition limitée. Réservez votre place parmi les pionniers.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navette Lunaire Personnelle – Accès Anticipé</title>
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* -------------------- GLOBAL -------------------- */
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
 
-<style>
-  :root{
-    --bg:#030416;
-    --card:#0b1220;
-    --muted:#9aa6bf;
-    --accent:#ff6f3c;
-    --accent-2:#ff8f63;
-    --glass: rgba(255,255,255,0.04);
-    --glass-2: rgba(255,255,255,0.02);
-    --radius:14px;
-    --max-width:1200px;
-  }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@300;500;700&display=swap');
 
-  /* Reset & base */
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background:var(--bg);
-    color:#eaf0ff;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    line-height:1.45;
-    overflow-x:hidden;
-  }
+        /* -------------------- STARRY BACKGROUND -------------------- */
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imgur.com/9aK7y7v.png');
+            background-size: cover;
+            animation: moveStars 60s linear infinite;
+            z-index: -2;
+        }
 
-  a{color:inherit}
-  img{max-width:100%;display:block}
+        @keyframes moveStars {
+            from { transform: translateY(0); }
+            to { transform: translateY(-2000px); }
+        }
 
-  /* Layout container */
-  .container{
-    width:100%;
-    max-width:var(--max-width);
-    margin:0 auto;
-    padding:0 24px;
-  }
+        /* -------------------- NAVBAR -------------------- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
 
-  /* NAVBAR */
-  nav{
-    position:fixed;
-    top:18px;
-    left:0;
-    right:0;
-    z-index:1200;
-    display:flex;
-    justify-content:center; /* center desktop menu */
-    pointer-events:none;
-  }
+        nav .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
 
-  .nav-inner{
-    width:100%;
-    max-width:var(--max-width);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-    padding:8px 20px;
-    pointer-events:auto;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:12px;
-    backdrop-filter: blur(8px) saturate(120%);
-    box-shadow: 0 6px 30px rgba(2,6,23,0.6);
-  }
+        nav .hamburger {
+            width: 30px;
+            height: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
 
-  .brand{
-    display:flex;
-    gap:12px;
-    align-items:center;
-  }
+        nav .hamburger span {
+            display: block;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
 
-  .logo-mark{
-    width:44px;height:44px;border-radius:10px;
-    background:linear-gradient(135deg,#2b2f7a,#0ea5ff);
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800;color:white;font-size:18px;
-    box-shadow: 0 6px 18px rgba(14,165,255,0.08), inset 0 -6px 18px rgba(0,0,0,0.2);
-  }
+        /* Menu mobile */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 70%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            padding: 80px 20px;
+            transition: 0.4s ease;
+            z-index: 9;
+        }
 
-  .brand h3{margin:0;font-size:16px;letter-spacing:0.6px}
-  .brand p{margin:0;font-size:12px;color:var(--muted)}
+        .mobile-menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 20px 0;
+            font-size: 1.3rem;
+        }
 
-  /* Desktop menu */
-  .menu{
-    display:flex;
-    gap:22px;
-    align-items:center;
-  }
+        .mobile-menu.open {
+            right: 0;
+        }
 
-  .menu a{
-    color:var(--muted);
-    font-weight:600;
-    font-size:14px;
-    padding:8px 12px;
-    border-radius:10px;
-    transition:all .22s ease;
-  }
+        /* -------------------- HERO -------------------- */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 20px;
+            text-align: center;
+            animation: fadeIn 2s ease forwards;
+        }
 
-  .menu a:hover{color:#fff;background:rgba(255,255,255,0.03);transform:translateY(-2px)}
+        header h1 {
+            font-size: 2.4rem;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
 
-  .cta-nav{
-    background:linear-gradient(90deg,var(--accent),var(--accent-2));
-    padding:10px 16px;border-radius:12px;color:#08101a;font-weight:700;
-    box-shadow: 0 8px 30px rgba(255,111,60,0.12);
-  }
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
 
-  /* Hamburger (mobile) */
-  .hamburger{
-    display:none;
-    width:46px;height:46px;border-radius:10px;
-    align-items:center;justify-content:center;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    cursor:pointer;
-  }
+        .cta {
+            background: white;
+            color: black;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+        }
 
-  .hamburger .bar{
-    width:20px;height:2px;background:#fff;border-radius:2px;position:relative;
-    transition:all .28s ease;
-  }
-  .hamburger .bar::before, .hamburger .bar::after{
-    content:"";position:absolute;left:0;width:20px;height:2px;background:#fff;border-radius:2px;transition:all .28s ease;
-  }
-  .hamburger .bar::before{top:-6px}
-  .hamburger .bar::after{top:6px}
+        .cta:hover {
+            background: #dcdcdc;
+        }
 
-  /* Mobile menu panel */
-  .mobile-panel{
-    position:fixed;inset:0;z-index:1100;
-    display:flex;align-items:flex-start;justify-content:flex-end;
-    pointer-events:none;
-  }
-  .mobile-drawer{
-    width:78%;
-    max-width:420px;
-    height:100%;
-    background:linear-gradient(180deg, rgba(6,10,20,0.98), rgba(6,10,20,0.96));
-    transform:translateX(110%);
-    transition:transform .36s cubic-bezier(.2,.9,.2,1);
-    padding:64px 28px;
-    box-shadow: -40px 0 80px rgba(2,6,23,0.6);
-    pointer-events:auto;
-  }
-  .mobile-drawer.open{transform:translateX(0)}
-  .mobile-drawer a{display:block;padding:14px 0;font-size:18px;color:var(--muted);font-weight:600}
-  .mobile-drawer .mobile-cta{margin-top:18px;background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:12px;border-radius:12px;color:#08101a;text-align:center;font-weight:800}
+        /* -------------------- SECTIONS -------------------- */
+        section {
+            padding: 80px 20px;
+            text-align: center;
+        }
 
-  /* HERO */
-  header.hero{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
-    padding:48px 0;
-    overflow:hidden;
-  }
+        .limited {
+            color: #ff4f4f;
+            font-weight: 700;
+            margin-top: 10px;
+        }
 
-  /* hero background layers */
-  .hero-bg{
-    position:absolute;inset:0;z-index:-3;overflow:hidden;
-  }
+        .product-img {
+            width: 90%;
+            max-width: 400px;
+            margin: 30px auto;
+            display: block;
+            filter: drop-shadow(0 0 20px white);
+            animation: float 6s ease-in-out infinite;
+        }
 
-  /* Nebula canvas sits above stars */
-  #nebulaCanvas{position:absolute;inset:0;z-index:-2;pointer-events:none}
-  #starsCanvas{position:absolute;inset:0;z-index:-3;pointer-events:none}
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0); }
+        }
 
-  .hero-inner{
-    position:relative;z-index:10;
-    width:100%;max-width:1100px;padding:48px;
-    display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:center;
-  }
+        /* -------------------- ANIMATIONS -------------------- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-  .hero-copy{
-    padding:28px 12px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:18px;
-    box-shadow: 0 20px 60px rgba(2,6,23,0.6);
-    backdrop-filter: blur(8px);
-  }
+        /* -------------------- FOOTER -------------------- */
+        footer {
+            padding: 40px;
+            text-align: center;
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
 
-  .kicker{
-    display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted);font-weight:700;font-size:12px;margin-bottom:14px;
-  }
-
-  h1.title{
-    margin:0 0 12px 0;font-size:44px;line-height:1.02;letter-spacing:-1px;
-    background:linear-gradient(90deg,#fff, #dbe9ff 60%);-webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-
-  p.lead{margin:0 0 20px 0;color:var(--muted);font-size:16px}
-
-  .hero-ctas{display:flex;gap:14px;align-items:center;margin-top:8px}
-  .btn-primary{
-    background:linear-gradient(90deg,var(--accent),var(--accent-2));
-    color:#08101a;padding:14px 18px;border-radius:12px;font-weight:800;box-shadow:0 12px 40px rgba(255,111,60,0.12);
-  }
-  .btn-ghost{
-    padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:700;
-  }
-
-  /* Right column card */
-  .hero-card{
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:18px;padding:18px;box-shadow:0 20px 60px rgba(2,6,23,0.6);
-  }
-
-  .specs{
-    display:flex;flex-direction:column;gap:12px;
-  }
-  .spec{
-    display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:12px;background:var(--glass-2);
-  }
-  .spec strong{font-weight:800}
-  .spec small{color:var(--muted)}
-
-  .badge{
-    display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:700;color:var(--muted);font-size:13px;
-  }
-
-  /* Sections */
-  section{
-    position:relative;
-    padding:88px 0;
-  }
-
-  .section-inner{width:100%;max-width:var(--max-width);margin:0 auto;padding:0 24px}
-
-  h2.section-title{font-size:28px;margin:0 0 18px 0;text-align:center}
-  p.section-sub{color:var(--muted);text-align:center;margin:0 auto 36px;max-width:820px}
-
-  /* Features grid */
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:22px;
-    margin-top:28px;
-  }
-  .card{
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:14px;padding:22px;box-shadow:0 18px 50px rgba(2,6,23,0.5);
-  }
-  .card h3{margin:0 0 8px 0}
-  .card p{margin:0;color:var(--muted)}
-
-  /* Testimonials */
-  .testimonials{
-    display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:28px;
-  }
-
-  .testimonial{
-    width:320px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:16px;padding:22px 18px 26px;position:relative;text-align:center;
-    box-shadow:0 18px 50px rgba(2,6,23,0.5);
-  }
-
-  .avatar-wrap{
-    position:absolute;left:50%;transform:translateX(-50%);top:-46px;width:92px;height:92px;border-radius:50%;
-    background:linear-gradient(180deg,#0b1220,#0b1220);display:flex;align-items:center;justify-content:center;
-    box-shadow:0 10px 30px rgba(2,6,23,0.6);
-    border:4px solid rgba(255,111,60,0.12);
-  }
-
-  .avatar{
-    width:78px;height:78px;border-radius:50%;overflow:hidden;position:relative;
-    background:#111;
-  }
-
-  /* helmet overlay (SVG mask) */
-  .avatar img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.02) saturate(1.05)}
-  .helmet{
-    position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-    mix-blend-mode:screen;
-    border-radius:50%;
-    box-shadow: inset 0 -10px 30px rgba(0,0,0,0.45);
-  }
-
-  .testimonial p{color:var(--muted);margin-top:36px;font-style:italic}
-  .testimonial strong{display:block;margin-top:12px;color:#fff}
-
-  /* Urgency / CTA strip */
-  .cta-strip{
-    margin-top:28px;display:flex;align-items:center;justify-content:center;gap:18px;
-  }
-  .stock{
-    background:linear-gradient(90deg,#ff3c3c,#ff8f63);
-    padding:12px 16px;border-radius:12px;font-weight:800;color:#08101a;
-    box-shadow:0 12px 40px rgba(255,111,60,0.12);
-  }
-
-  /* Footer */
-  footer{
-    padding:48px 0;color:var(--muted);text-align:center;border-top:1px solid rgba(255,255,255,0.02);
-  }
-
-  /* Fade-in utility */
-  .reveal{opacity:0;transform:translateY(18px);transition:opacity .9s ease, transform .9s ease}
-  .reveal.visible{opacity:1;transform:none}
-
-  /* Responsive */
-  @media (max-width:1000px){
-    .hero-inner{grid-template-columns:1fr;gap:20px;padding:28px}
-    .grid{grid-template-columns:repeat(2,1fr)}
-  }
-  @media (max-width:720px){
-    .nav-inner{padding:10px 14px}
-    .menu{display:none}
-    .hamburger{display:flex}
-    .hero-inner{padding:18px}
-    .brand p{display:none}
-    .grid{grid-template-columns:1fr}
-    .hero-card{order:2}
-    .hero-copy{order:1}
-    .hero-inner{align-items:stretch}
-    .logo-mark{width:40px;height:40px}
-    .title{font-size:32px}
-  }
-
-  /* Animated hamburger active state */
-  .hamburger.active .bar{background:transparent}
-  .hamburger.active .bar::before{transform:translateY(6px) rotate(45deg)}
-  .hamburger.active .bar::after{transform:translateY(-6px) rotate(-45deg)}
-
-  /* Rocket takeoff overlay */
-  .launch-overlay{
-    position:fixed;inset:0;z-index:1500;pointer-events:none;opacity:0;transition:opacity .4s ease;
-  }
-  .launch-overlay.active{opacity:1;pointer-events:auto}
-  .launch-rocket{
-    position:absolute;left:50%;transform:translateX(-50%) translateY(0);
-    bottom:-220px;width:160px;transition:transform 2.2s cubic-bezier(.2,.9,.2,1), bottom 2.2s cubic-bezier(.2,.9,.2,1);
-    filter:drop-shadow(0 30px 60px rgba(0,0,0,0.6));
-  }
-  .launch-rocket.lift{
-    transform:translateX(-50%) translateY(-120vh) rotate(6deg);
-    bottom:120%;
-  }
-
-  /* smoke */
-  .smoke{
-    position:absolute;left:50%;transform:translateX(-50%);bottom:40px;width:260px;height:260px;border-radius:50%;
-    background:radial-gradient(circle at 50% 40%, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
-    filter:blur(28px);opacity:0;transition:opacity .3s ease;
-  }
-  .launch-overlay.active .smoke{opacity:1;animation:smokeRise 2.2s ease forwards}
-  @keyframes smokeRise{
-    0%{transform:translateX(-50%) translateY(0) scale(0.6);opacity:0.9}
-    60%{opacity:0.9}
-    100%{transform:translateX(-50%) translateY(-60vh) scale(1.8);opacity:0}
-  }
-
-</style>
+        /* Desktop */
+        @media (min-width: 768px) {
+            header h1 { font-size: 3.5rem; }
+            header p { font-size: 1.3rem; }
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- STAR & NEBULA CANVASES -->
-<canvas id="starsCanvas" aria-hidden="true"></canvas>
-<canvas id="nebulaCanvas" aria-hidden="true"></canvas>
+<div class="stars"></div>
 
-<!-- NAV -->
+<!-- NAVBAR -->
 <nav>
-  <div class="nav-inner container">
-    <div class="brand">
-      <div class="logo-mark">N1</div>
-      <div>
-        <h3 style="margin:0">NovaOne</h3>
-        <p style="margin:0">Accès anticipé · Édition limitée</p>
-      </div>
+    <div class="logo">LUNAR-X</div>
+    <div class="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
     </div>
-
-    <div class="menu" role="navigation" aria-label="Menu principal">
-      <a href="#about">À propos</a>
-      <a href="#features">Caractéristiques</a>
-      <a href="#testimonials">Avis</a>
-      <a href="#precommande" class="cta-nav">Accès anticipé</a>
-    </div>
-
-    <div class="hamburger" id="hamburger" aria-label="Ouvrir le menu" onclick="toggleMobile()">
-      <div class="bar"></div>
-    </div>
-  </div>
 </nav>
 
-<!-- Mobile drawer -->
-<div class="mobile-panel" id="mobilePanel" aria-hidden="true">
-  <div class="mobile-drawer" id="mobileDrawer">
-    <a href="#about" onclick="toggleMobile()">À propos</a>
-    <a href="#features" onclick="toggleMobile()">Caractéristiques</a>
-    <a href="#testimonials" onclick="toggleMobile()">Avis</a>
-    <a href="#precommande" onclick="toggleMobile()" class="mobile-cta">Accès anticipé</a>
-  </div>
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#hero">Accueil</a>
+    <a href="#product">La Navette</a>
+    <a href="#offer">Offre Limitée</a>
 </div>
 
 <!-- HERO -->
-<header class="hero" id="top">
-  <div class="hero-bg" aria-hidden="true"></div>
-
-  <div class="hero-inner container">
-    <div class="hero-copy reveal" data-reveal>
-      <span class="kicker">Accès anticipé · Stock limité</span>
-      <h1 class="title">Voyagez au‑delà. En toute sécurité.</h1>
-      <p class="lead">NovaOne réinvente le voyage spatial personnel : propulsion de nouvelle génération, cabine panoramique et assistance IA. Réservez votre place parmi les 50 premières unités.</p>
-
-      <div class="hero-ctas">
-        <a class="btn-primary" href="#precommande" onclick="scrollToSection(event,'precommande')">Réserver maintenant</a>
-        <a class="btn-ghost" href="#features" onclick="scrollToSection(event,'features')">Découvrir la technologie</a>
-      </div>
-
-      <div style="margin-top:18px;color:var(--muted);font-size:13px">
-        <span class="badge">Édition limitée</span>
-        <span style="margin-left:12px">Livraison estimée : 2027</span>
-      </div>
-    </div>
-
-    <aside class="hero-card reveal" data-reveal>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-        <div>
-          <div style="font-size:12px;color:var(--muted)">Spécifications clés</div>
-          <div style="font-weight:800;font-size:18px">NovaOne Mk I</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:12px;color:var(--muted)">Prix indicatif</div>
-          <div style="font-weight:900;font-size:18px">€2,400,000</div>
-        </div>
-      </div>
-
-      <div class="specs">
-        <div class="spec"><div><small>Propulsion</small><br><strong>Ion hybride</strong></div><small>Rendement élevé</small></div>
-        <div class="spec"><div><small>Capacité</small><br><strong>1 pilote + 2 passagers</strong></div><small>Cabine pressurisée</small></div>
-        <div class="spec"><div><small>Autonomie</small><br><strong>Orbite basse</strong></div><small>~2 heures opérationnelles</small></div>
-      </div>
-
-      <div style="margin-top:16px;display:flex;gap:10px;align-items:center;justify-content:space-between">
-        <div style="display:flex;gap:8px;align-items:center">
-          <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,#1f2b5a,#0ea5ff);display:flex;align-items:center;justify-content:center;font-weight:800">AI</div>
-          <div style="font-size:13px">
-            <div style="font-weight:800">Copilote IA</div>
-            <div style="color:var(--muted)">Assistance & sécurité</div>
-          </div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:12px;color:var(--muted)">Disponibilité</div>
-          <div style="font-weight:900">50 unités</div>
-        </div>
-      </div>
-    </aside>
-  </div>
+<header id="hero">
+    <h1>Explorez la Lune<br>Comme Jamais</h1>
+    <p>La première navette spatiale personnelle, conçue pour les explorateurs du futur.</p>
+    <a class="cta" href="#offer">Accès Anticipé</a>
+    <div class="limited">Stock extrêmement limité</div>
 </header>
 
-<!-- ABOUT -->
-<section id="about">
-  <div class="section-inner">
-    <h2 class="section-title reveal" data-reveal>Une nouvelle ère du voyage spatial</h2>
-    <p class="section-sub reveal" data-reveal>NovaOne combine sécurité, confort et performance pour rendre l'espace accessible à un public exigeant. Conçu pour la fiabilité, pensé pour l'expérience.</p>
+<!-- PRODUCT -->
+<section id="product">
+    <h2>Votre Navette Spatiale Personnelle</h2>
+    <p>Propulsion ionique, cockpit panoramique, autonomie orbitale.  
+       Une expérience de voyage lunaire totalement immersive.</p>
 
-    <div class="grid" style="margin-top:28px">
-      <div class="card reveal" data-reveal>
-        <h3>Design centré sur l'humain</h3>
-        <p>Cabine ergonomique, matériaux composites avancés et isolation acoustique pour un confort inégalé pendant le vol.</p>
-      </div>
-      <div class="card reveal" data-reveal>
-        <h3>Sécurité redondante</h3>
-        <p>Systèmes de secours multiples, parachute orbital et procédures automatisées supervisées par l'IA.</p>
-      </div>
-      <div class="card reveal" data-reveal>
-        <h3>Expérience panoramique</h3>
-        <p>Dôme en verre renforcé offrant une vue immersive sur la Terre et l'espace, optimisé pour la photogrammétrie.</p>
-      </div>
-    </div>
-  </div>
+    <img src="https://i.imgur.com/8QZ7Z9F.png" class="product-img" alt="Navette spatiale futuriste">
 </section>
 
-<!-- PARALLAX IMAGE -->
-<section aria-hidden="true" style="padding:0">
-  <div style="height:420px;border-radius:18px;overflow:hidden;margin:0 24px 40px;background-image:url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=2000&q=80');background-size:cover;background-position:center;box-shadow:0 30px 80px rgba(2,6,23,0.6)"></div>
+<!-- OFFER -->
+<section id="offer">
+    <h2>Accès Anticipé – Réservations Ouvertes</h2>
+    <p>Devenez l’un des premiers humains à voyager vers la Lune à bord de votre propre navette.</p>
+    <div class="limited">⚠ Seulement 12 unités disponibles</div>
+    <br>
+    <a class="cta">Réserver Maintenant</a>
 </section>
 
-<!-- FEATURES -->
-<section id="features">
-  <div class="section-inner">
-    <h2 class="section-title reveal" data-reveal>Technologie de pointe</h2>
-    <p class="section-sub reveal" data-reveal>Chaque composant a été conçu pour la performance, la durabilité et l'expérience utilisateur.</p>
-
-    <div class="grid" style="margin-top:28px">
-      <div class="card reveal" data-reveal>
-        <h3>Propulsion hybride</h3>
-        <p>Combinaison d'ionique et de poussée chimique pour un décollage contrôlé et une efficacité en orbite.</p>
-      </div>
-      <div class="card reveal" data-reveal>
-        <h3>IA de vol</h3>
-        <p>Navigation adaptative, détection d'anomalies en temps réel et assistance au pilotage pour tous les scénarios.</p>
-      </div>
-      <div class="card reveal" data-reveal>
-        <h3>Matériaux avancés</h3>
-        <p>Composites à mémoire de forme et revêtements thermiques pour réduire la masse et améliorer la longévité.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section id="testimonials">
-  <div class="section-inner">
-    <h2 class="section-title reveal" data-reveal>Témoignages</h2>
-    <p class="section-sub reveal" data-reveal>Des pilotes et des premiers passagers partagent leur expérience NovaOne.</p>
-
-    <div class="testimonials">
-      <div class="testimonial reveal" data-reveal>
-        <div class="avatar-wrap">
-          <div class="avatar">
-            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" alt="Alex, pilote test">
-            <div class="helmet" aria-hidden="true"></div>
-          </div>
-        </div>
-        <p>« Voir la Terre depuis la cabine NovaOne est une émotion pure — calme, précis et incroyablement beau. »</p>
-        <strong>— Alex, pilote test</strong>
-      </div>
-
-      <div class="testimonial reveal" data-reveal>
-        <div class="avatar-wrap">
-          <div class="avatar">
-            <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=300&q=80" alt="Marie, astronaute amateur">
-            <div class="helmet" aria-hidden="true"></div>
-          </div>
-        </div>
-        <p>« La cabine est si confortable qu’on oublie qu’on est dans une fusée — l’IA gère tout avec une précision rassurante. »</p>
-        <strong>— Marie, astronaute amateur</strong>
-      </div>
-
-      <div class="testimonial reveal" data-reveal>
-        <div class="avatar-wrap">
-          <div class="avatar">
-            <img src="https://images.unsplash.com/photo-1545996124-1b6f3b0b6f6b?auto=format&fit=crop&w=300&q=80" alt="Julien, ingénieur">
-            <div class="helmet" aria-hidden="true"></div>
-          </div>
-        </div>
-        <p>« L’intégration des systèmes est remarquable — chaque vol est une démonstration d’ingénierie et d’élégance. »</p>
-        <strong>— Julien, ingénieur</strong>
-      </div>
-    </div>
-
-    <div class="cta-strip reveal" data-reveal>
-      <div class="stock">⚠️ Stock limité : 50 unités</div>
-      <a class="btn-primary" href="#precommande" onclick="scrollToSection(event,'precommande')">Réserver maintenant</a>
-    </div>
-  </div>
-</section>
-
-<!-- PREORDER -->
-<section id="precommande">
-  <div class="section-inner">
-    <h2 class="section-title reveal" data-reveal>Accès anticipé — Réservez votre place</h2>
-    <p class="section-sub reveal" data-reveal>Réservez maintenant pour garantir une unité de l'édition limitée NovaOne Mk I. Paiement sécurisé et assistance dédiée.</p>
-
-    <div style="display:flex;gap:20px;align-items:flex-start;justify-content:center;margin-top:28px;flex-wrap:wrap">
-      <div class="card reveal" data-reveal style="max-width:520px">
-        <h3>Pack Accès Pionnier</h3>
-        <p style="color:var(--muted)">Inclut : formation pré-vol, visite usine, badge pionnier et priorité de livraison.</p>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px">
-          <div>
-            <div style="font-weight:900;font-size:20px">€2,400,000</div>
-            <div style="color:var(--muted);font-size:13px">Réservation : €240,000 (10%)</div>
-          </div>
-          <div>
-            <a class="btn-primary" href="#" onclick="startLaunchSequence(event)">Réserver</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="card reveal" data-reveal style="max-width:360px">
-        <h3>Assistance & Financement</h3>
-        <p style="color:var(--muted)">Options de financement sur mesure et support VIP pour la préparation du vol.</p>
-        <div style="margin-top:12px">
-          <a class="btn-ghost" href="#">Contact VIP</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
 <footer>
-  <div class="container">
-    <div style="max-width:900px;margin:0 auto;color:var(--muted)">
-      © 2026 NovaOne. Tous droits réservés. Les images et spécifications sont indicatives et sujettes à modification.
-    </div>
-  </div>
+    © 2026 Lunar-X Technologies — Voyagez au-delà des limites.
 </footer>
 
-<!-- LAUNCH OVERLAY -->
-<div class="launch-overlay" id="launchOverlay" aria-hidden="true">
-  <div class="smoke" id="launchSmoke" aria-hidden="true"></div>
-  <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=400&q=80" alt="rocket" class="launch-rocket" id="launchRocket" style="width:160px">
-</div>
-
 <script>
-/* ---------------------------
-   Smooth reveal on scroll
-   --------------------------- */
-(function(){
-  const reveals = document.querySelectorAll('[data-reveal]');
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, {threshold:0.12});
-  reveals.forEach(r=>{ r.classList.add('reveal'); io.observe(r); });
-})();
-
-/* ---------------------------
-   Mobile drawer toggle
-   --------------------------- */
-function toggleMobile(){
-  const panel = document.getElementById('mobilePanel');
-  const drawer = document.getElementById('mobileDrawer');
-  const ham = document.getElementById('hamburger');
-  const open = drawer.classList.toggle('open');
-  ham.classList.toggle('active', open);
-  panel.style.pointerEvents = open ? 'auto' : 'none';
-  panel.setAttribute('aria-hidden', !open);
-}
-
-/* Close mobile on outside click */
-document.addEventListener('click', (e)=>{
-  const drawer = document.getElementById('mobileDrawer');
-  const ham = document.getElementById('hamburger');
-  if(!drawer) return;
-  if(drawer.classList.contains('open') && !drawer.contains(e.target) && !ham.contains(e.target)){
-    drawer.classList.remove('open');
-    ham.classList.remove('active');
-    document.getElementById('mobilePanel').style.pointerEvents='none';
-  }
-});
-
-/* ---------------------------
-   Smooth scroll helper
-   --------------------------- */
-function scrollToSection(e,id){
-  if(e) e.preventDefault();
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-/* ---------------------------
-   STARFIELD (professional, layered)
-   - multiple depth layers
-   - twinkle effect
-   --------------------------- */
-(function(){
-  const canvas = document.getElementById('starsCanvas');
-  const ctx = canvas.getContext('2d');
-  let w = canvas.width = innerWidth;
-  let h = canvas.height = innerHeight;
-  window.addEventListener('resize', ()=>{ w = canvas.width = innerWidth; h = canvas.height = innerHeight; initStars(); });
-
-  const layers = [
-    {count:120, speed:0.15, size:[0.4,1.2], alpha:0.9},
-    {count:80, speed:0.35, size:[0.8,1.8], alpha:0.85},
-    {count:40, speed:0.9, size:[1.6,3.2], alpha:0.95}
-  ];
-
-  let stars = [];
-
-  function rand(min,max){ return Math.random()*(max-min)+min; }
-
-  function initStars(){
-    stars = [];
-    layers.forEach((layer,li)=>{
-      for(let i=0;i<layer.count;i++){
-        stars.push({
-          x: Math.random()*w,
-          y: Math.random()*h,
-          z: li, // layer index
-          size: rand(layer.size[0], layer.size[1]),
-          baseAlpha: layer.alpha * (0.6 + Math.random()*0.4),
-          twinkle: Math.random()*Math.PI*2,
-          speed: layer.speed * (0.6 + Math.random()*0.8)
-        });
-      }
-    });
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,w,h);
-    // subtle gradient overlay to add depth
-    const g = ctx.createLinearGradient(0,0,0,h);
-    g.addColorStop(0, 'rgba(2,6,23,0.0)');
-    g.addColorStop(1, 'rgba(2,6,23,0.2)');
-    ctx.fillStyle = g;
-    ctx.fillRect(0,0,w,h);
-
-    stars.forEach(s=>{
-      // twinkle
-      s.twinkle += 0.02 + Math.random()*0.02;
-      const alpha = s.baseAlpha * (0.6 + 0.4*Math.sin(s.twinkle));
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(255,255,255,'+alpha.toFixed(3)+')';
-      ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-      ctx.fill();
-
-      // motion (vertical drift)
-      s.y += s.speed;
-      if(s.y > h + 10) s.y = -10;
-    });
-    requestAnimationFrame(draw);
-  }
-
-  initStars();
-  draw();
-})();
-
-/* ---------------------------
-   NEBULA (procedural, canvas)
-   - layered noise-like blobs
-   - animated subtle movement
-   --------------------------- */
-(function(){
-  const canvas = document.getElementById('nebulaCanvas');
-  const ctx = canvas.getContext('2d');
-  let w = canvas.width = innerWidth;
-  let h = canvas.height = innerHeight;
-  window.addEventListener('resize', ()=>{ w = canvas.width = innerWidth; h = canvas.height = innerHeight; });
-
-  // create offscreen gradient blobs
-  const blobs = [];
-  const colors = [
-    {c:'rgba(120,60,255,0.12)', x:0.18, y:0.25, r:0.45, vx:0.0008, vy:0.0006},
-    {c:'rgba(0,160,255,0.10)', x:0.78, y:0.72, r:0.55, vx:-0.0006, vy:-0.0004},
-    {c:'rgba(255,80,60,0.06)', x:0.5, y:0.45, r:0.35, vx:0.0004, vy:-0.0005}
-  ];
-
-  function draw(){
-    ctx.clearRect(0,0,w,h);
-    // subtle radial vignette
-    const vignette = ctx.createRadialGradient(w*0.5,h*0.5, w*0.2, w*0.5,h*0.5, Math.max(w,h));
-    vignette.addColorStop(0,'rgba(0,0,0,0)');
-    vignette.addColorStop(1,'rgba(0,0,0,0.35)');
-    ctx.fillStyle = vignette;
-    ctx.fillRect(0,0,w,h);
-
-    colors.forEach((b, i)=>{
-      // animate positions
-      b.x += b.vx;
-      b.y += b.vy;
-      if(b.x < -0.4) b.x = 1.4;
-      if(b.x > 1.4) b.x = -0.4;
-      if(b.y < -0.4) b.y = 1.4;
-      if(b.y > 1.4) b.y = -0.4;
-
-      const gx = ctx.createRadialGradient(w*b.x, h*b.y, 0, w*b.x, h*b.y, Math.max(w,h)*b.r);
-      gx.addColorStop(0, b.c);
-      gx.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.fillStyle = gx;
-      ctx.fillRect(0,0,w,h);
-      ctx.globalCompositeOperation = 'source-over';
-    });
-
-    requestAnimationFrame(draw);
-  }
-
-  draw();
-})();
-
-/* ---------------------------
-   Launch sequence (rocket + smoke)
-   - triggers overlay animations
-   --------------------------- */
-function startLaunchSequence(e){
-  if(e) e.preventDefault();
-  const overlay = document.getElementById('launchOverlay');
-  const rocket = document.getElementById('launchRocket');
-  const smoke = document.getElementById('launchSmoke');
-
-  overlay.classList.add('active');
-  rocket.classList.add('lift');
-
-  // small screen adjustment
-  setTimeout(()=>{
-    // after animation, navigate to precommande anchor and show confirmation modal (placeholder)
-    overlay.classList.remove('active');
-    rocket.classList.remove('lift');
-    // scroll to precommande
-    document.getElementById('precommande').scrollIntoView({behavior:'smooth'});
-    // show a lightweight confirmation (could be replaced by modal)
-    flashReservationNotice();
-  }, 2200);
-}
-
-function flashReservationNotice(){
-  const el = document.createElement('div');
-  el.style.position='fixed';
-  el.style.left='50%';
-  el.style.top='18px';
-  el.style.transform='translateX(-50%)';
-  el.style.background='linear-gradient(90deg,#0ea5ff,#7c3aed)';
-  el.style.color='#021018';
-  el.style.padding='12px 18px';
-  el.style.borderRadius='12px';
-  el.style.boxShadow='0 12px 40px rgba(2,6,23,0.4)';
-  el.style.zIndex=1600;
-  el.style.fontWeight=800;
-  el.textContent='Réservation enregistrée — Merci, Ayynn !';
-  document.body.appendChild(el);
-  setTimeout(()=>{ el.style.transition='opacity .6s ease'; el.style.opacity='0'; setTimeout(()=>el.remove(),700); }, 2600);
-}
-
-/* ---------------------------
-   Accessibility: reduce motion
-   --------------------------- */
-const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(prefersReduced){
-  // stop animations by removing requestAnimationFrame loops where possible
-  // simple approach: hide canvases
-  document.getElementById('starsCanvas').style.display='none';
-  document.getElementById('nebulaCanvas').style.display='none';
-}
-
-/* ---------------------------
-   Preload key images for smoothness
-   --------------------------- */
-(function preload(){
-  const imgs = [
-    'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=2000&q=80',
-    'https://images.unsplash.com/photo-1447433819943-74a20887a81e?auto=format&fit=crop&w=1950&q=80',
-    'https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&w=1950&q=80',
-    'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=400&q=80'
-  ];
-  imgs.forEach(u=>{ const i=new Image(); i.src=u; });
-})();
-
+    function toggleMenu() {
+        document.getElementById("mobileMenu").classList.toggle("open");
+    }
 </script>
+
 </body>
 </html>
