@@ -370,18 +370,20 @@
   .stock-alert {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.6rem;
     letter-spacing: 0.15em;
-    color: rgba(192,57,43,0.9);
+    color: var(--moon);
     text-transform: uppercase;
-    border: 1px solid rgba(192,57,43,0.3);
+    border: 1px solid rgba(240,237,228,0.2);
     padding: 8px 18px;
     animation: fadeInUp 1s ease 1.1s both;
     margin-top: 8px;
+    text-align: center;
   }
-  .stock-alert .dot { width: 5px; height: 5px; background: var(--danger); border-radius: 50%; animation: blink 1s ease-in-out infinite; }
+  .stock-alert .dot { width: 5px; height: 5px; background: var(--danger); border-radius: 50%; animation: blink 1s ease-in-out infinite; flex-shrink: 0; }
 
   /* SCROLL INDICATOR */
   .scroll-ind {
@@ -868,6 +870,198 @@
   }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
+  /* ===== CHATBOT ===== */
+  #copilot-btn {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    z-index: 200;
+    width: 60px; height: 60px;
+    background: var(--moon);
+    border: none;
+    border-radius: 50%;
+    cursor: none;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 30px rgba(240,237,228,0.15), 0 8px 32px rgba(0,0,0,0.6);
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  #copilot-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 50px rgba(240,237,228,0.25), 0 12px 40px rgba(0,0,0,0.7);
+  }
+  #copilot-btn svg { width: 26px; height: 26px; color: var(--black); }
+  #copilot-btn .notif {
+    position: absolute;
+    top: 2px; right: 2px;
+    width: 12px; height: 12px;
+    background: #4aff80;
+    border-radius: 50%;
+    border: 2px solid var(--black);
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  #copilot-panel {
+    position: fixed;
+    bottom: 108px; right: 32px;
+    z-index: 200;
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    background: rgba(5,10,18,0.97);
+    border: 1px solid rgba(240,237,228,0.1);
+    backdrop-filter: blur(30px);
+    display: flex; flex-direction: column;
+    transform: translateY(20px) scale(0.96);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 60px rgba(138,180,212,0.04);
+  }
+  #copilot-panel.open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .cp-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(240,237,228,0.07);
+    flex-shrink: 0;
+  }
+  .cp-avatar {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(240,237,228,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(240,237,228,0.04);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cp-avatar svg { width: 18px; height: 18px; color: var(--moon); }
+  .cp-avatar .status {
+    position: absolute; bottom: 1px; right: 1px;
+    width: 8px; height: 8px;
+    background: #4aff80; border-radius: 50%;
+    border: 1.5px solid var(--black);
+  }
+  .cp-info { flex: 1; }
+  .cp-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.12em;
+    color: var(--moon); text-transform: uppercase;
+  }
+  .cp-subtitle {
+    font-size: 0.65rem; font-weight: 300;
+    color: rgba(240,237,228,0.3); margin-top: 2px; letter-spacing: 0.04em;
+  }
+  .cp-close {
+    background: none; border: none; cursor: none;
+    color: rgba(240,237,228,0.3); padding: 4px;
+    transition: color 0.2s; line-height: 1;
+    font-size: 1.1rem;
+  }
+  .cp-close:hover { color: var(--moon); }
+
+  .cp-messages {
+    flex: 1; overflow-y: auto;
+    padding: 20px; display: flex; flex-direction: column; gap: 16px;
+    max-height: 360px; min-height: 200px;
+    scrollbar-width: thin; scrollbar-color: rgba(240,237,228,0.1) transparent;
+  }
+  .cp-messages::-webkit-scrollbar { width: 3px; }
+  .cp-messages::-webkit-scrollbar-thumb { background: rgba(240,237,228,0.1); }
+
+  .cp-msg {
+    display: flex; flex-direction: column; gap: 4px;
+    animation: msgIn 0.3s ease both;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .cp-msg.user { align-items: flex-end; }
+  .cp-msg.bot  { align-items: flex-start; }
+
+  .cp-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    font-size: 0.78rem; line-height: 1.65;
+    font-weight: 300; letter-spacing: 0.02em;
+  }
+  .cp-msg.user .cp-bubble {
+    background: var(--moon); color: var(--black);
+    font-weight: 400;
+  }
+  .cp-msg.bot .cp-bubble {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(240,237,228,0.08);
+    color: rgba(240,237,228,0.85);
+  }
+  .cp-sender {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.52rem; letter-spacing: 0.15em;
+    color: rgba(240,237,228,0.2); text-transform: uppercase;
+    padding: 0 4px;
+  }
+
+  .cp-typing {
+    display: flex; align-items: center; gap: 5px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(240,237,228,0.08);
+    width: fit-content;
+  }
+  .cp-typing span {
+    width: 5px; height: 5px;
+    background: rgba(240,237,228,0.4);
+    border-radius: 50%;
+    animation: typingDot 1.2s ease-in-out infinite;
+  }
+  .cp-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .cp-typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingDot {
+    0%, 60%, 100% { opacity: 0.3; transform: scale(1); }
+    30% { opacity: 1; transform: scale(1.3); }
+  }
+
+  .cp-suggestions {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 0 20px 14px;
+  }
+  .cp-sugg {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem; letter-spacing: 0.1em;
+    border: 1px solid rgba(240,237,228,0.12);
+    color: rgba(240,237,228,0.45);
+    background: transparent;
+    padding: 6px 10px;
+    cursor: none; text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .cp-sugg:hover { border-color: rgba(240,237,228,0.35); color: var(--moon); }
+
+  .cp-input-row {
+    display: flex; gap: 0;
+    border-top: 1px solid rgba(240,237,228,0.07);
+    flex-shrink: 0;
+  }
+  .cp-input {
+    flex: 1;
+    background: transparent; border: none; outline: none;
+    color: var(--moon);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem; font-weight: 300; letter-spacing: 0.03em;
+    padding: 16px 18px;
+  }
+  .cp-input::placeholder { color: rgba(240,237,228,0.2); }
+  .cp-send {
+    background: none; border: none; border-left: 1px solid rgba(240,237,228,0.07);
+    color: rgba(240,237,228,0.3); cursor: none;
+    padding: 0 18px; transition: color 0.2s;
+    display: flex; align-items: center;
+  }
+  .cp-send:hover { color: var(--moon); }
+  .cp-send svg { width: 16px; height: 16px; }
+
   /* MOBILE */
   @media (max-width: 900px) {
     .nav-links, .nav-cta { display: none; }
@@ -881,6 +1075,8 @@
     .cursor, .cursor-ring { display: none; }
   }
   @media (max-width: 600px) {
+    #copilot-btn { bottom: 20px; right: 20px; width: 52px; height: 52px; }
+    #copilot-panel { bottom: 88px; right: 12px; left: 12px; width: auto; }
     .hero-title { font-size: clamp(2.8rem, 12vw, 5rem); }
     .countdown { gap: 12px; }
     .countdown-sep { font-size: 2rem; }
@@ -1376,5 +1572,161 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
 reveals.forEach(el => observer.observe(el));
 </script>
+<!-- CHATBOT COPILOT -->
+<button id="copilot-btn" aria-label="Ouvrir le copilote IA">
+  <div class="notif"></div>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44L5.5 8.5A4.5 4.5 0 0 1 9.5 2Z"/>
+    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44L18.5 8.5A4.5 4.5 0 0 0 14.5 2Z"/>
+  </svg>
+</button>
+
+<div id="copilot-panel" role="dialog" aria-label="Copilote IA ASTRA">
+  <div class="cp-header">
+    <div class="cp-avatar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+        <path d="M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
+      </svg>
+      <div class="status"></div>
+    </div>
+    <div class="cp-info">
+      <div class="cp-name">ASTRA · Copilote IA</div>
+      <div class="cp-subtitle">Navigatrice spatiale · Luna Industries</div>
+    </div>
+    <button class="cp-close" id="copilot-close" aria-label="Fermer">✕</button>
+  </div>
+
+  <div class="cp-messages" id="cp-messages">
+    <div class="cp-msg bot">
+      <div class="cp-sender">ASTRA</div>
+      <div class="cp-bubble">Bonsoir, Commandant. Je suis ASTRA, votre copilote IA de bord. Prêt à naviguer vers la Lune ? Posez-moi toutes vos questions sur la mission, la navette, ou l'espace. 🌕</div>
+    </div>
+  </div>
+
+  <div class="cp-suggestions" id="cp-suggestions">
+    <button class="cp-sugg">Durée du trajet ?</button>
+    <button class="cp-sugg">Danger de la mission ?</button>
+    <button class="cp-sugg">Vie sur la Lune ?</button>
+    <button class="cp-sugg">Comment réserver ?</button>
+  </div>
+
+  <div class="cp-input-row">
+    <input class="cp-input" id="cp-input" type="text" placeholder="Posez votre question..." autocomplete="off" maxlength="300"/>
+    <button class="cp-send" id="cp-send" aria-label="Envoyer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+// ===== CHATBOT =====
+(function() {
+  const btn = document.getElementById('copilot-btn');
+  const panel = document.getElementById('copilot-panel');
+  const closeBtn = document.getElementById('copilot-close');
+  const messagesEl = document.getElementById('cp-messages');
+  const inputEl = document.getElementById('cp-input');
+  const sendBtn = document.getElementById('cp-send');
+  const suggsEl = document.getElementById('cp-suggestions');
+
+  let isOpen = false;
+  let isLoading = false;
+  let conversationHistory = [];
+
+  const SYSTEM_PROMPT = `Tu es ASTRA, le copilote IA de bord de Luna Industries, la première entreprise à proposer des navettes spatiales personnelles pour voyager vers la Lune. Tu parles comme une astronaute expérimentée du futur proche (2026-2027), avec un ton professionnel, confiant, passionné et légèrement poétique. Tu utilises des métaphores spatiales naturellement dans tes réponses. Tu tutoies l'utilisateur en l'appelant parfois "Commandant" ou "Navigateur". Tu réponds en français, de manière concise (3-4 phrases max sauf si nécessaire). Tu connais parfaitement la navette LUNA-1 (trajet 18h, 2 passagers, 38 000 km/h, gravité artificielle, système de propulsion ionique quantique, certification ESA/FAA, disponible Q2 2027, prix 2,4M€ en accès anticipé, seulement 12 unités dont 10 déjà réservées). Tu peux répondre à toutes les questions sur l'espace, la Lune, les voyages spatiaux, la physique spatiale, avec précision et enthousiasme d'astronaute. Ne fais jamais mention d'OpenAI, Anthropic ou d'être une IA générique — tu es ASTRA, l'IA exclusive de Luna Industries.`;
+
+  function togglePanel() {
+    isOpen = !isOpen;
+    panel.classList.toggle('open', isOpen);
+    btn.querySelector('.notif').style.display = isOpen ? 'none' : '';
+    if (isOpen) setTimeout(() => inputEl.focus(), 350);
+  }
+
+  btn.addEventListener('click', togglePanel);
+  closeBtn.addEventListener('click', togglePanel);
+
+  // Suggestions
+  suggsEl.addEventListener('click', e => {
+    const sugg = e.target.closest('.cp-sugg');
+    if (sugg) {
+      inputEl.value = sugg.textContent;
+      sendMessage();
+    }
+  });
+
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  sendBtn.addEventListener('click', sendMessage);
+
+  function appendMessage(role, text) {
+    const isBot = role === 'bot';
+    const msg = document.createElement('div');
+    msg.className = `cp-msg ${isBot ? 'bot' : 'user'}`;
+    msg.innerHTML = `
+      ${isBot ? '<div class="cp-sender">ASTRA</div>' : ''}
+      <div class="cp-bubble">${text.replace(/\n/g, '<br>')}</div>
+      ${!isBot ? '<div class="cp-sender" style="text-align:right">Vous</div>' : ''}
+    `;
+    messagesEl.appendChild(msg);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function showTyping() {
+    const typing = document.createElement('div');
+    typing.className = 'cp-msg bot';
+    typing.id = 'cp-typing-indicator';
+    typing.innerHTML = `<div class="cp-sender">ASTRA</div><div class="cp-typing"><span></span><span></span><span></span></div>`;
+    messagesEl.appendChild(typing);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('cp-typing-indicator');
+    if (t) t.remove();
+  }
+
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text || isLoading) return;
+    inputEl.value = '';
+    suggsEl.style.display = 'none';
+    isLoading = true;
+
+    appendMessage('user', text);
+    conversationHistory.push({ role: 'user', content: text });
+    showTyping();
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: conversationHistory,
+        })
+      });
+
+      const data = await response.json();
+      const reply = data.content && data.content[0] && data.content[0].text
+        ? data.content[0].text
+        : "Signal perturbé par une tempête solaire, Commandant. Retentez dans un instant. 🛰️";
+
+      removeTyping();
+      appendMessage('bot', reply);
+      conversationHistory.push({ role: 'assistant', content: reply });
+
+    } catch (err) {
+      removeTyping();
+      appendMessage('bot', "Perte de signal momentanée, Commandant. Les communications spatiales peuvent être capricieuses. Réessayez dans un instant. 🛸");
+    }
+
+    isLoading = false;
+  }
+})();
+</script>
 </body>
-</html>
