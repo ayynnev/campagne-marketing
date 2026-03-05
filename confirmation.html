@@ -1,1 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmation — Audi RSQ8</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
 
+:root {
+  --black:  #080808;
+  --carbon: #111214;
+  --pearl:  #e8e6e1;
+  --white:  #f5f3ef;
+  --red:    #c41230;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--black);
+  color: var(--pearl);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── NOISE ── */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity:0.028;
+}
+
+/* ── CURSOR ── */
+.cursor { position:fixed; width:6px; height:6px; background:var(--red); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+.cursor-wheel { position:fixed; width:38px; height:38px; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .2s, height .2s; }
+
+/* ── SPEED LINES ── */
+.speed-bg { position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.45; }
+
+/* ── NAV ── */
+nav {
+  position:relative; z-index:10;
+  padding:0 6%; height:68px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(232,230,225,.06);
+  background:rgba(8,8,8,.88);
+  backdrop-filter:blur(20px);
+  flex-shrink:0;
+}
+.nav-logo { display:flex; align-items:center; gap:11px; text-decoration:none; }
+.nav-rings { display:flex; }
+.nav-rings span { display:block; width:16px; height:16px; border:1.8px solid var(--pearl); border-radius:50%; margin-left:-5px; }
+.nav-rings span:first-child { margin-left:0; }
+.nav-wordmark { font-weight:600; font-size:.75rem; letter-spacing:.32em; text-transform:uppercase; color:var(--pearl); }
+
+/* ── MAIN ── */
+main {
+  position:relative; z-index:2;
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:flex-start;
+  padding:60px 24px 80px;
+}
+
+/* ── SUCCESS ICON ── */
+.success-wrap {
+  display:flex; flex-direction:column; align-items:center;
+  margin-bottom:44px;
+  animation:fadeUp .9s cubic-bezier(.16,1,.3,1) .1s both;
+}
+
+.check-ring {
+  width:72px; height:72px; position:relative; margin-bottom:28px;
+}
+.check-ring svg { width:72px; height:72px; }
+.check-ring .ring-bg {
+  fill:none; stroke:rgba(232,230,225,.07); stroke-width:1.5;
+}
+.check-ring .ring-progress {
+  fill:none; stroke:var(--red); stroke-width:1.5;
+  stroke-linecap:round;
+  stroke-dasharray: 201;
+  stroke-dashoffset: 201;
+  animation: drawRing 1s cubic-bezier(.16,1,.3,1) .3s forwards;
+  transform-origin:center; transform:rotate(-90deg);
+}
+.check-ring .check-mark {
+  stroke:var(--pearl); stroke-width:1.8; fill:none; stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:30; stroke-dashoffset:30;
+  animation: drawCheck .5s ease .9s forwards;
+}
+@keyframes drawRing { to { stroke-dashoffset:0; } }
+@keyframes drawCheck { to { stroke-dashoffset:0; } }
+
+.success-eyebrow {
+  font-size:.58rem; font-weight:400; letter-spacing:.32em; text-transform:uppercase;
+  color:rgba(232,230,225,.25); margin-bottom:12px;
+  display:flex; align-items:center; gap:10px;
+}
+.success-eyebrow::before, .success-eyebrow::after { content:''; width:20px; height:1px; background:rgba(232,230,225,.15); }
+
+.success-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(2.2rem,5vw,3.2rem);
+  font-weight:300; line-height:1.05; text-align:center;
+  color:var(--white); margin-bottom:10px;
+}
+.success-title em { font-style:italic; color:rgba(232,230,225,.4); }
+.success-sub {
+  font-size:.78rem; font-weight:300; color:rgba(232,230,225,.38);
+  line-height:1.7; letter-spacing:.02em; text-align:center;
+  max-width:420px;
+}
+
+/* ── GRID ── */
+.confirm-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:20px;
+  width:100%; max-width:800px;
+}
+
+/* ── CARD ── */
+.confirm-card {
+  position:relative;
+  background:rgba(11,12,14,.9);
+  border:1px solid rgba(232,230,225,.07);
+  backdrop-filter:blur(28px);
+  padding:32px 30px 28px;
+  animation:fadeUp .8s cubic-bezier(.16,1,.3,1) both;
+}
+.confirm-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--red), rgba(196,18,48,0));
+}
+.confirm-card:nth-child(1) { animation-delay:.25s; }
+.confirm-card:nth-child(2) { animation-delay:.35s; }
+.confirm-card.full { grid-column:1/-1; animation-delay:.45s; }
+
+.card-label {
+  font-size:.55rem; font-weight:500; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--red); opacity:.75; margin-bottom:20px;
+  display:flex; align-items:center; gap:10px;
+}
+.card-label::after { content:''; flex:1; height:1px; background:rgba(196,18,48,.18); }
+
+/* ── ORDER LINES ── */
+.order-ref {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.7rem; font-weight:300; color:var(--white);
+  letter-spacing:.06em; margin-bottom:18px;
+}
+.order-lines { display:flex; flex-direction:column; gap:12px; }
+.order-line { display:flex; justify-content:space-between; align-items:center; }
+.order-line-label { font-size:.68rem; font-weight:300; color:rgba(232,230,225,.35); letter-spacing:.05em; }
+.order-line-val { font-size:.78rem; font-weight:400; color:var(--pearl); }
+.order-total { display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid rgba(232,230,225,.07); padding-top:16px; margin-top:16px; }
+.order-total-label { font-size:.58rem; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:rgba(232,230,225,.35); }
+.order-total-val { font-family:'Cormorant Garamond', serif; font-size:1.9rem; font-weight:300; color:var(--white); }
+
+/* ── EMAIL NOTICE ── */
+.email-notice {
+  display:flex; align-items:flex-start; gap:12px;
+  background:rgba(196,18,48,.04);
+  border:1px solid rgba(196,18,48,.12);
+  padding:16px 18px;
+}
+.email-notice svg { flex-shrink:0; opacity:.5; margin-top:1px; }
+.email-notice p { font-size:.72rem; font-weight:300; color:rgba(232,230,225,.45); line-height:1.6; }
+.email-notice strong { color:rgba(232,230,225,.7); font-weight:400; }
+
+/* ── TIMELINE ── */
+.timeline { display:flex; flex-direction:column; gap:0; }
+.timeline-item {
+  display:grid; grid-template-columns:28px 1fr; gap:16px;
+  align-items:stretch;
+}
+.timeline-left { display:flex; flex-direction:column; align-items:center; }
+.timeline-dot {
+  width:28px; height:28px; border-radius:50%;
+  border:1px solid rgba(196,18,48,.4);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; background:rgba(196,18,48,.08);
+}
+.timeline-dot.done { background:var(--red); border-color:var(--red); }
+.timeline-dot span { font-size:.5rem; font-weight:600; color:var(--pearl); }
+.timeline-line { flex:1; width:1px; background:rgba(232,230,225,.06); margin:4px auto 0; }
+.timeline-item:last-child .timeline-line { display:none; }
+.timeline-content { padding-bottom:24px; }
+.timeline-item:last-child .timeline-content { padding-bottom:0; }
+.timeline-step-label { font-size:.55rem; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:rgba(196,18,48,.6); margin-bottom:5px; }
+.timeline-step-title { font-size:.88rem; font-weight:400; color:var(--pearl); margin-bottom:4px; }
+.timeline-step-desc { font-size:.7rem; font-weight:300; color:rgba(232,230,225,.35); line-height:1.6; }
+
+/* ── ACTIONS ── */
+.actions-wrap {
+  width:100%; max-width:800px; margin-top:20px;
+  display:flex; gap:14px;
+  animation:fadeUp .8s cubic-bezier(.16,1,.3,1) .55s both;
+}
+.btn-home {
+  flex:1; display:inline-flex; align-items:center; justify-content:center; gap:12px;
+  background:var(--red); color:#fff;
+  font-family:'Outfit', sans-serif; font-size:.75rem; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase;
+  border:none; padding:18px 32px;
+  cursor:none; position:relative; overflow:hidden;
+  transition:transform .2s, box-shadow .3s;
+  text-decoration:none;
+}
+.btn-home::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent); transform:translateX(-100%); transition:transform .5s; }
+.btn-home:hover::before { transform:translateX(100%); }
+.btn-home:hover { transform:translateY(-2px); box-shadow:0 16px 50px rgba(196,18,48,.35); }
+
+.btn-calendar {
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  background:transparent; color:rgba(232,230,225,.4);
+  font-family:'Outfit', sans-serif; font-size:.7rem; font-weight:300;
+  letter-spacing:.16em; text-transform:uppercase;
+  border:1px solid rgba(232,230,225,.1); padding:18px 24px;
+  cursor:none; text-decoration:none;
+  transition:color .2s, border-color .2s;
+}
+.btn-calendar:hover { color:var(--pearl); border-color:rgba(232,230,225,.25); }
+
+/* ── SIDE DECO ── */
+.side-deco { position:fixed; left:5%; top:50%; transform:translateY(-50%); z-index:3; display:flex; flex-direction:column; gap:3px; opacity:0; animation:fadeIn 1s ease 1.2s forwards; }
+.side-deco-line { width:1px; height:60px; background:linear-gradient(to bottom, transparent, rgba(196,18,48,.4), transparent); }
+.side-deco-text { font-size:.5rem; font-weight:300; letter-spacing:.32em; text-transform:uppercase; color:rgba(232,230,225,.12); writing-mode:vertical-rl; margin-top:12px; }
+
+/* ── CONFETTI PARTICLES ── */
+.particle {
+  position:fixed; pointer-events:none; z-index:5;
+  width:3px; border-radius:1px;
+  animation:fall linear forwards;
+}
+@keyframes fall {
+  0%   { transform:translateY(-20px) rotate(0deg); opacity:1; }
+  100% { transform:translateY(100vh) rotate(720deg); opacity:0; }
+}
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:none; } }
+@keyframes fadeIn { to { opacity:1; } }
+
+@media (max-width:680px) {
+  .confirm-grid { grid-template-columns:1fr; }
+  .confirm-card.full { grid-column:1; }
+  .actions-wrap { flex-direction:column; }
+  body { cursor:auto; }
+  .cursor,.cursor-wheel,.side-deco { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<svg class="cursor-wheel" id="cursorWheel" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="20" cy="20" r="19" stroke="rgba(232,230,225,0.35)" stroke-width="1.5" fill="none"/>
+  <circle cx="20" cy="20" r="14" stroke="rgba(232,230,225,0.12)" stroke-width="5" fill="none"/>
+  <circle cx="20" cy="20" r="11" stroke="rgba(232,230,225,0.45)" stroke-width="1" fill="rgba(20,20,22,0.6)"/>
+  <line x1="20" y1="9"  x2="20" y2="14" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="29.5" y1="14.5" x2="25.7" y2="17.2" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="26"   y1="26"   x2="22.9" y2="23.5" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="14"   y1="26"   x2="17.1" y2="23.5" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10.5" y1="14.5" x2="14.3" y2="17.2" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="20" cy="20" r="3" fill="rgba(196,18,48,0.9)"/>
+</svg>
+
+<!-- SPEED LINES -->
+<canvas class="speed-bg" id="speedBg"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-rings"><span></span><span></span><span></span><span></span></div>
+    <span class="nav-wordmark">Audi <span style="opacity:.3;font-weight:200">RSQ8</span></span>
+  </a>
+</nav>
+
+<!-- SIDE DECO -->
+<div class="side-deco">
+  <div class="side-deco-line"></div>
+  <span class="side-deco-text">RSQ8 · Confirmé</span>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- SUCCESS HEADER -->
+  <div class="success-wrap">
+    <div class="check-ring">
+      <svg viewBox="0 0 72 72">
+        <circle class="ring-bg" cx="36" cy="36" r="32"/>
+        <circle class="ring-progress" cx="36" cy="36" r="32"/>
+        <polyline class="check-mark" points="22,36 31,45 50,27"/>
+      </svg>
+    </div>
+    <p class="success-eyebrow">Paiement confirmé</p>
+    <h1 class="success-title">Votre RSQ8<br><em>vous attend.</em></h1>
+    <p class="success-sub">Votre réservation a bien été enregistrée. Un email de confirmation vous a été envoyé avec tous les détails.</p>
+  </div>
+
+  <!-- GRID -->
+  <div class="confirm-grid">
+
+    <!-- Récapitulatif commande -->
+    <div class="confirm-card">
+      <p class="card-label">Récapitulatif</p>
+      <p class="order-ref">#RSQ8-<span id="orderNum">—</span></p>
+      <div class="order-lines">
+        <div class="order-line">
+          <span class="order-line-label">Pack choisi</span>
+          <span class="order-line-val" id="confPackName">Essai 7 Jours</span>
+        </div>
+        <div class="order-line">
+          <span class="order-line-label">Durée</span>
+          <span class="order-line-val" id="confDays">7 jours</span>
+        </div>
+        <div class="order-line">
+          <span class="order-line-label">Livraison</span>
+          <span class="order-line-val">Incluse</span>
+        </div>
+        <div class="order-line">
+          <span class="order-line-label">Assurance</span>
+          <span class="order-line-val">Tous risques</span>
+        </div>
+      </div>
+      <div class="order-total">
+        <span class="order-total-label">Total payé</span>
+        <span class="order-total-val" id="confTotal">— €</span>
+      </div>
+    </div>
+
+    <!-- Email notice -->
+    <div class="confirm-card" style="display:flex;flex-direction:column;gap:16px;">
+      <p class="card-label">Confirmation</p>
+      <div class="email-notice">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <p>Un email de confirmation a été envoyé à votre adresse avec le <strong>récapitulatif complet</strong> et les instructions de livraison.</p>
+      </div>
+      <div class="email-notice" style="border-color:rgba(232,230,225,.08);background:rgba(255,255,255,.02);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.12 1.18 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+        </svg>
+        <p>Notre équipe vous contactera sous <strong>24 heures</strong> pour planifier la livraison à votre adresse.</p>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="confirm-card full">
+      <p class="card-label">Prochaines étapes</p>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot done">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <p class="timeline-step-label">Maintenant</p>
+            <p class="timeline-step-title">Paiement confirmé</p>
+            <p class="timeline-step-desc">Votre réservation est enregistrée et sécurisée. Numéro de commande <strong style="color:rgba(232,230,225,.6)">#RSQ8-<span class="orderNumInline">—</span></strong>.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot"><span>2</span></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <p class="timeline-step-label">Sous 24h</p>
+            <p class="timeline-step-title">Appel de notre conseiller</p>
+            <p class="timeline-step-desc">Un expert RSQ8 vous contacte pour confirmer votre adresse de livraison et planifier la date de remise des clés.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot"><span>3</span></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <p class="timeline-step-label">J — Livraison</p>
+            <p class="timeline-step-title">La RSQ8 arrive chez vous</p>
+            <p class="timeline-step-desc">Livraison à domicile par notre équipe. Un accompagnateur expert est présent le premier jour pour vous présenter le véhicule.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot"><span>4</span></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <p class="timeline-step-label">Après l'essai</p>
+            <p class="timeline-step-title">Décision d'acquisition</p>
+            <p class="timeline-step-desc">Vous choisissez d'acquérir la RSQ8 — votre paiement d'essai est intégralement déduit du prix final. Sinon, remboursement complet sans condition.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /confirm-grid -->
+
+  <!-- ACTIONS -->
+  <div class="actions-wrap">
+    <a class="btn-home" href="index.html">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Retour à l'accueil
+    </a>
+    <a class="btn-calendar" href="#" id="calBtn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Ajouter au calendrier
+    </a>
+  </div>
+
+</main>
+
+<script>
+// ── GENERATE ORDER NUMBER
+const orderNum = 'A' + Math.random().toString(36).substring(2,6).toUpperCase() + Math.floor(Math.random()*100);
+document.getElementById('orderNum').textContent = orderNum;
+document.querySelectorAll('.orderNumInline').forEach(el => el.textContent = orderNum);
+
+// ── RESTORE PACK FROM SESSIONSORAGE (if available) or show default
+const packName  = sessionStorage.getItem('packName')  || 'Essai 7 Jours';
+const packDays  = sessionStorage.getItem('packDays')  || '7';
+const packPrice = sessionStorage.getItem('packPrice') || '100';
+document.getElementById('confPackName').textContent = packName;
+document.getElementById('confDays').textContent     = packDays + (packDays==='1' ? ' jour' : ' jours');
+document.getElementById('confTotal').textContent    = packPrice + ' €';
+
+// ── CURSOR
+const cursor = document.getElementById('cursor');
+const wheel  = document.getElementById('cursorWheel');
+if(window.matchMedia('(pointer:fine)').matches && cursor){
+  let mx=0,my=0,rx=0,ry=0,angle=0;
+  document.addEventListener('mousemove',e=>{
+    const dx=e.clientX-mx; mx=e.clientX; my=e.clientY;
+    angle+=dx*.8;
+    wheel.style.transform=`translate(-50%,-50%) rotate(${angle}deg)`;
+  });
+  (function loop(){
+    rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+    wheel.style.left=rx+'px'; wheel.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ wheel.style.width='52px'; wheel.style.height='52px'; });
+    el.addEventListener('mouseleave',()=>{ wheel.style.width='38px'; wheel.style.height='38px'; });
+  });
+}
+
+// ── SPEED LINES
+(function(){
+  const canvas = document.getElementById('speedBg');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W,H,lines=[];
+  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function spawn(){
+    lines=[];
+    for(let i=0;i<40;i++) lines.push({ x:Math.random()*W, y:Math.random()*H, len:Math.random()*80+20, speed:Math.random()*3+1, opacity:Math.random()*0.04+0.01, w:Math.random()*0.6+0.2 });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    lines.forEach(l=>{
+      const g=ctx.createLinearGradient(l.x,l.y,l.x-l.len,l.y);
+      g.addColorStop(0,`rgba(196,18,48,${l.opacity})`);
+      g.addColorStop(1,'rgba(196,18,48,0)');
+      ctx.beginPath(); ctx.moveTo(l.x,l.y); ctx.lineTo(l.x-l.len,l.y);
+      ctx.strokeStyle=g; ctx.lineWidth=l.w; ctx.stroke();
+      l.x-=l.speed;
+      if(l.x+l.len<0){ l.x=W+l.len; l.y=Math.random()*H; }
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{ resize(); spawn(); });
+  resize(); spawn(); draw();
+})();
+
+// ── CONFETTI PARTICLES (subtils, rouges et perle)
+(function(){
+  const colors = ['#c41230','rgba(232,230,225,0.6)','#8a0d21','rgba(232,230,225,0.3)'];
+  function burst(){
+    for(let i=0;i<28;i++){
+      const p = document.createElement('div');
+      p.className='particle';
+      const size = Math.random()*3+1;
+      p.style.cssText=`
+        left:${Math.random()*100}vw;
+        top:-10px;
+        height:${Math.random()*10+6}px;
+        width:${size}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        animation-duration:${Math.random()*2+2}s;
+        animation-delay:${Math.random()*1.2}s;
+        transform:rotate(${Math.random()*360}deg);
+      `;
+      document.body.appendChild(p);
+      p.addEventListener('animationend',()=>p.remove());
+    }
+  }
+  setTimeout(burst, 800);
+  setTimeout(burst, 1400);
+})();
+
+// ── CALENDAR (ICS download)
+document.getElementById('calBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  const now = new Date();
+  const start = new Date(now.getTime() + 2*24*60*60*1000); // J+2
+  const pad = n => String(n).padStart(2,'0');
+  const fmt = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+  const end = new Date(start.getTime() + 2*60*60*1000);
+  const ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//AudiRSQ8//FR',
+    'BEGIN:VEVENT',
+    `UID:${orderNum}@audirSQ8`,
+    `DTSTART:${fmt(start)}`,
+    `DTEND:${fmt(end)}`,
+    'SUMMARY:Livraison Audi RSQ8 — Essai',
+    `DESCRIPTION:Référence commande #RSQ8-${orderNum}. Livraison à domicile de votre RSQ8.`,
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics],{type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='essai-audi-rsq8.ics'; a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
