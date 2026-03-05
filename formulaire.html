@@ -38,23 +38,6 @@ body::before {
   opacity:0.028;
 }
 
-/* ── VIDEO BACKGROUND ── */
-.video-bg {
-  position:fixed; inset:0; z-index:0; overflow:hidden;
-}
-.video-bg video {
-  width:100%; height:100%;
-  object-fit:cover; object-position:center;
-  filter:brightness(.25) contrast(1.1) saturate(.55);
-}
-.video-bg::after {
-  content:''; position:absolute; inset:0;
-  background:
-    radial-gradient(ellipse at 50% 50%, transparent 15%, rgba(8,8,8,.72) 100%),
-    linear-gradient(to right, rgba(8,8,8,.9) 0%, rgba(8,8,8,.15) 35%, rgba(8,8,8,.15) 65%, rgba(8,8,8,.9) 100%),
-    linear-gradient(to bottom, rgba(8,8,8,.5) 0%, transparent 20%, transparent 80%, rgba(8,8,8,.6) 100%);
-}
-
 /* ── CURSOR ── */
 .cursor {
   position:fixed; width:6px; height:6px;
@@ -345,15 +328,6 @@ select option, select optgroup { background:var(--carbon); color:var(--pearl); }
   <line x1="10.5" y1="14.5" x2="14.3" y2="17.2" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
   <circle cx="20" cy="20" r="3" fill="rgba(196,18,48,0.9)"/>
 </svg>
-
-<!-- VIDEO BACKGROUND — Pexels free luxury car footage -->
-<div class="video-bg">
-  <video autoplay muted loop playsinline>
-    <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4">
-    <source src="https://videos.pexels.com/video-files/4763825/4763825-uhd_2560_1440_25fps.mp4" type="video/mp4">
-    <source src="https://videos.pexels.com/video-files/2519660/2519660-uhd_2560_1440_24fps.mp4" type="video/mp4">
-  </video>
-</div>
 
 <!-- SPEED LINES -->
 <canvas class="speed-bg" id="speedBg"></canvas>
