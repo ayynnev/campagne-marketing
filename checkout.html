@@ -116,7 +116,9 @@ main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column
 .pack-card.selected .pack-img { filter:brightness(.7) contrast(1.1) saturate(.75); }
 
 /* Body */
-.pack-body { padding:22px 22px 26px; }
+.pack-card { display:flex; flex-direction:column; }
+.pack-body { padding:22px 22px 26px; display:flex; flex-direction:column; flex:1; }
+.pack-perks { list-style:none; margin-bottom:22px; display:flex; flex-direction:column; gap:7px; flex:1; }
 .pack-duration { font-size:.58rem; font-weight:400; letter-spacing:.26em; text-transform:uppercase; color:rgba(232,230,225,.3); margin-bottom:8px; }
 .pack-name { font-family:'Cormorant Garamond', serif; font-size:1.55rem; font-weight:300; color:var(--white); margin-bottom:4px; line-height:1.1; }
 .pack-desc { font-size:.72rem; font-weight:300; color:rgba(232,230,225,.35); line-height:1.6; margin-bottom:20px; }
@@ -124,7 +126,7 @@ main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column
 .pack-price-num { font-family:'Cormorant Garamond', serif; font-size:2.4rem; font-weight:300; color:var(--white); line-height:1; }
 .pack-price-cur { font-size:.9rem; font-weight:300; color:rgba(232,230,225,.5); margin-top:4px; }
 .pack-price-day { font-size:.6rem; font-weight:300; letter-spacing:.12em; text-transform:uppercase; color:rgba(232,230,225,.25); }
-.pack-perks { list-style:none; margin-bottom:22px; display:flex; flex-direction:column; gap:7px; }
+
 .pack-perks li { font-size:.7rem; font-weight:300; color:rgba(232,230,225,.45); display:flex; align-items:center; gap:8px; }
 .pack-perks li::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--red); opacity:.7; flex-shrink:0; }
 
@@ -389,9 +391,9 @@ input::placeholder { color:rgba(232,230,225,.18); }
     <!-- PACK 7J -->
     <div class="pack-card" data-pack="7" data-name="Essai 7 Jours" data-price="100" data-days="7">
       <img class="pack-img"
-        src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80&auto=format&fit=crop"
+        src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&q=80&auto=format&fit=crop"
         alt="Audi RSQ8 — Essai 7 jours"
-        onerror="this.src='https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?w=800'">
+        onerror="this.src='https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=800&q=80&auto=format&fit=crop'">
       <div class="pack-body">
         <p class="pack-duration">Expérience Complète</p>
         <h2 class="pack-name">7 Jours<br>d'essai</h2>
