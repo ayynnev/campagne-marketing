@@ -58,30 +58,30 @@ body::before {
 /* ── NAV ── */
 nav {
   position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100; padding: 22px 6%;
+  z-index: 200;
+  padding: 0 6%;
+  height: 72px;
   display: flex; align-items: center; justify-content: space-between;
-  transition: background .4s, padding .3s;
+  background: linear-gradient(to bottom, rgba(8,8,8,.85) 0%, transparent 100%);
+  transition: background .4s, height .3s, border-color .3s;
+  border-bottom: 1px solid transparent;
 }
 nav.scrolled {
-  background: rgba(8,8,8,0.92);
-  backdrop-filter: blur(24px);
-  padding: 14px 6%;
-  border-bottom: 1px solid rgba(232,230,225,0.05);
+  background: rgba(8,8,8,0.96);
+  backdrop-filter: blur(28px) saturate(1.4);
+  height: 60px;
+  border-bottom: 1px solid rgba(232,230,225,0.06);
 }
 
 .nav-logo {
   display: flex; align-items: center; gap: 12px;
-  text-decoration: none;
+  text-decoration: none; flex-shrink: 0;
 }
-.nav-logo-rings {
-  display: flex; gap: -2px;
-}
+.nav-logo-rings { display: flex; }
 .nav-logo-rings span {
   display: block; width: 18px; height: 18px;
-  border: 2px solid var(--pearl);
-  border-radius: 50%;
-  margin-left: -6px;
-  transition: border-color .2s;
+  border: 2px solid var(--pearl); border-radius: 50%;
+  margin-left: -6px; transition: border-color .2s;
 }
 .nav-logo-rings span:first-child { margin-left: 0; }
 .nav-wordmark {
@@ -93,25 +93,52 @@ nav.scrolled {
 
 .nav-links {
   display: flex; gap: 36px; list-style: none;
+  position: absolute; left: 50%; transform: translateX(-50%);
 }
 .nav-links a {
-  font-size: .7rem; font-weight: 300;
+  font-size: .68rem; font-weight: 300;
   letter-spacing: .18em; text-transform: uppercase;
   color: rgba(232,230,225,.5); text-decoration: none;
-  transition: color .2s;
+  transition: color .2s; white-space: nowrap;
 }
 .nav-links a:hover { color: var(--pearl); }
 
+.nav-right {
+  display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+}
+
+/* Inline urgency pill */
+.nav-urgency {
+  display: flex; align-items: center; gap: 7px;
+  border: 1px solid rgba(196,18,48,.5);
+  background: rgba(196,18,48,.1);
+  padding: 5px 12px;
+  font-size: .58rem; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(255,180,180,.9);
+  white-space: nowrap;
+  animation: navUrgencyPulse 3s ease-in-out infinite;
+}
+@keyframes navUrgencyPulse {
+  0%,100% { border-color: rgba(196,18,48,.5); background: rgba(196,18,48,.1); }
+  50%     { border-color: rgba(196,18,48,.8); background: rgba(196,18,48,.18); }
+}
+.nav-urgency-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--red); flex-shrink: 0;
+  animation: blink 1.2s ease-in-out infinite;
+}
+
 .nav-cta {
-  font-size: .68rem; font-weight: 500;
+  font-size: .65rem; font-weight: 500;
   letter-spacing: .14em; text-transform: uppercase;
   color: var(--black); background: var(--pearl);
-  border: none; padding: 10px 22px; cursor: none;
-  text-decoration: none;
-  transition: background .25s, transform .15s;
-  white-space: nowrap;
+  border: none; padding: 9px 20px; cursor: none;
+  text-decoration: none; white-space: nowrap;
+  transition: background .25s, transform .15s, box-shadow .25s;
+  flex-shrink: 0;
 }
-.nav-cta:hover { background: var(--white); transform: translateY(-1px); }
+.nav-cta:hover { background: var(--white); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(232,230,225,.12); }
 
 /* Hamburger */
 .hamburger {
@@ -120,8 +147,7 @@ nav.scrolled {
 }
 .hamburger span {
   display: block; width: 22px; height: 1.5px;
-  background: var(--pearl);
-  transition: transform .3s, opacity .3s;
+  background: var(--pearl); transition: transform .3s, opacity .3s;
 }
 .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
@@ -129,7 +155,7 @@ nav.scrolled {
 
 /* Mobile menu */
 .mobile-menu {
-  position: fixed; inset: 0; z-index: 90;
+  position: fixed; inset: 0; z-index: 190;
   background: rgba(8,8,8,.97); backdrop-filter: blur(20px);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 36px;
@@ -145,26 +171,6 @@ nav.scrolled {
 .mobile-menu a:hover { color: var(--pearl); }
 .mobile-menu .nav-cta { font-size: .82rem; padding: 14px 36px; }
 
-/* ── URGENCY BANNER ── */
-.urgency-banner {
-  position: relative; z-index: 2;
-  background: var(--red);
-  padding: 11px 6%;
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-  margin-top: 0;
-  animation: slideDown .6s ease both;
-}
-@keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.urgency-banner p {
-  font-size: .68rem; font-weight: 500;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: #fff; text-align: center;
-}
-.urgency-banner .blink-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: #fff; flex-shrink: 0;
-  animation: blink 1.2s ease-in-out infinite;
-}
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
 
 /* ── HERO ── */
@@ -864,9 +870,77 @@ footer {
   color: rgba(232,230,225,.35);
 }
 
+/* ── SPEED-ENTRY SECTION ANIMATIONS ── */
+
+/* Base state — all speed-entry elements start hidden */
+.speed-entry {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Variant: slide from left with blur */
+.speed-entry.from-left {
+  transform: translateX(-80px) skewX(4deg);
+}
+/* Variant: slide from right */
+.speed-entry.from-right {
+  transform: translateX(80px) skewX(-4deg);
+}
+/* Variant: slam from bottom */
+.speed-entry.from-bottom {
+  transform: translateY(60px) scale(.97);
+}
+/* Variant: zoom-blur */
+.speed-entry.zoom-in {
+  transform: scale(.92) translateY(20px);
+  filter: blur(4px);
+}
+
+/* Active state — triggered by IntersectionObserver */
+.speed-entry.entered {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity .75s cubic-bezier(.16,1,.3,1),
+    transform .75s cubic-bezier(.16,1,.3,1),
+    filter .5s ease;
+}
+
+/* Stagger delays for children */
+.speed-entry.delay-1 { transition-delay: .08s; }
+.speed-entry.delay-2 { transition-delay: .16s; }
+.speed-entry.delay-3 { transition-delay: .24s; }
+.speed-entry.delay-4 { transition-delay: .32s; }
+
+/* Section divider — red swoosh line that draws itself */
+.section-swoosh {
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, var(--red), rgba(196,18,48,0));
+  transition: width 1s cubic-bezier(.16,1,.3,1);
+  margin-bottom: 28px;
+}
+.section-swoosh.entered { width: 80px; }
+
+/* Streak — thin speed line that shoots across on section entry */
+.streak-wrap {
+  position: relative; overflow: hidden;
+}
+.streak-wrap::after {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(196,18,48,.06), transparent);
+  transition: left .8s cubic-bezier(.16,1,.3,1);
+  pointer-events: none;
+}
+.streak-wrap.entered::after { left: 150%; }
+
 /* ── MOBILE ── */
 @media (max-width: 860px) {
-  .nav-links, .nav-cta { display: none; }
+  .nav-links { display: none; }
+  .nav-urgency { display: none; }
+  .nav-cta { display: none; }
   .hamburger { display: flex; }
   .benefits-grid { grid-template-columns: 1fr; }
   .process-steps { grid-template-columns: 1fr; }
@@ -901,12 +975,6 @@ footer {
   <circle cx="20" cy="20" r="3" fill="rgba(196,18,48,0.9)"/>
 </svg>
 
-<!-- URGENCY BANNER -->
-<div class="urgency-banner">
-  <div class="blink-dot"></div>
-  <p>⚡ Offre limitée — 14 essais sur 20 déjà réservés · Il ne reste que <strong>6 places</strong></p>
-</div>
-
 <!-- NAV -->
 <nav id="navbar">
   <a href="#" class="nav-logo">
@@ -920,7 +988,13 @@ footer {
     <li><a href="#scarcity">Disponibilité</a></li>
     <li><a href="#process">Comment ça marche</a></li>
   </ul>
-  <a href="#cta-final" class="nav-cta">Réserver mon essai</a>
+  <div class="nav-right">
+    <div class="nav-urgency">
+      <span class="nav-urgency-dot"></span>
+      <span>6 places restantes</span>
+    </div>
+    <a href="#cta-final" class="nav-cta">Réserver mon essai</a>
+  </div>
   <button class="hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -928,6 +1002,7 @@ footer {
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
+  <div style="font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(196,18,48,.9);border:1px solid rgba(196,18,48,.3);padding:6px 16px;">⚡ 6 places restantes</div>
   <a href="#benefits" class="mobile-link">L'offre</a>
   <a href="#scarcity" class="mobile-link">Disponibilité</a>
   <a href="#process" class="mobile-link">Comment ça marche</a>
@@ -1031,21 +1106,22 @@ footer {
 </div>
 
 <!-- PROMISE -->
-<section id="promise">
-  <p class="promise-text reveal">
+<section id="promise" class="streak-wrap">
+  <div class="section-swoosh speed-entry from-left"></div>
+  <p class="promise-text speed-entry from-bottom">
     Vivez la RSQ8 <strong>au quotidien pendant une semaine entière,</strong>
     <em> puis achetez-la</em> à un prix que le marché ne peut pas battre.
   </p>
 </section>
 
 <!-- BENEFITS -->
-<section id="benefits">
-  <div class="benefits-header reveal">
+<section id="benefits" class="streak-wrap">
+  <div class="benefits-header speed-entry from-left">
     <p class="section-eyebrow">L'offre</p>
     <h2 class="section-title">Zéro risque.<br>100% conviction.</h2>
   </div>
   <div class="benefits-grid">
-    <div class="benefit-card reveal">
+    <div class="benefit-card speed-entry from-bottom delay-1">
       <p class="benefit-num">01 —</p>
       <svg class="benefit-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
         <path d="M18 3L33 10v10c0 8-6 14-15 17C9 34 3 28 3 20V10L18 3z"/>
@@ -1054,7 +1130,7 @@ footer {
       <h3 class="benefit-name">Zéro risque</h3>
       <p class="benefit-desc">Vous ne payez que si vous êtes conquis. L'essai est entièrement gratuit, aucun frais caché, aucune obligation d'achat à l'issue de la semaine.</p>
     </div>
-    <div class="benefit-card reveal">
+    <div class="benefit-card speed-entry from-bottom delay-2">
       <p class="benefit-num">02 —</p>
       <svg class="benefit-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
         <circle cx="18" cy="18" r="15"/>
@@ -1064,7 +1140,7 @@ footer {
       <h3 class="benefit-name">Prix exclusif négocié</h3>
       <p class="benefit-desc">Accédez à un tarif d'achat préférentiel bien en dessous du marché, réservé uniquement aux participants du programme d'essai. Introuvable ailleurs.</p>
     </div>
-    <div class="benefit-card reveal">
+    <div class="benefit-card speed-entry from-bottom delay-3">
       <p class="benefit-num">03 —</p>
       <svg class="benefit-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
         <path d="M6 18h4M26 18h4M18 6v4M18 26v4"/>
@@ -1078,13 +1154,13 @@ footer {
 </section>
 
 <!-- SCARCITY -->
-<section id="scarcity">
+<section id="scarcity" class="streak-wrap">
   <div class="scar-inner">
-    <p class="scar-eyebrow reveal">⚡ Disponibilité en temps réel</p>
-    <h2 class="scar-title reveal">20 essais.<br>14 déjà pris.</h2>
-    <p class="scar-sub reveal">La demande dépasse largement l'offre. Une fois les 20 places épuisées, le programme ferme définitivement. Ne remettez pas à demain.</p>
+    <p class="scar-eyebrow speed-entry from-left">⚡ Disponibilité en temps réel</p>
+    <h2 class="scar-title speed-entry from-bottom">20 essais.<br>14 déjà pris.</h2>
+    <p class="scar-sub speed-entry from-bottom delay-1">La demande dépasse largement l'offre. Une fois les 20 places épuisées, le programme ferme définitivement. Ne remettez pas à demain.</p>
 
-    <div class="slots-grid reveal">
+    <div class="slots-grid speed-entry zoom-in delay-2">
       <!-- 14 taken -->
       <div class="slot taken"></div><div class="slot taken"></div>
       <div class="slot taken"></div><div class="slot taken"></div>
@@ -1101,9 +1177,9 @@ footer {
       <div class="slot available">05</div>
       <div class="slot available">06</div>
     </div>
-    <p class="slots-label reveal"><strong>6 places disponibles</strong> · 14 déjà réservées</p>
+    <p class="slots-label speed-entry from-bottom delay-3"><strong>6 places disponibles</strong> · 14 déjà réservées</p>
 
-    <div class="prog-wrap reveal">
+    <div class="prog-wrap speed-entry from-bottom delay-4">
       <div class="prog-bar"><div class="prog-fill"></div></div>
       <div class="prog-labels">
         <span class="hot">14 essais pris</span>
@@ -1111,7 +1187,7 @@ footer {
       </div>
     </div>
 
-    <a href="#cta-final" class="btn-primary reveal" style="display:inline-flex;margin-top:10px;">
+    <a href="#cta-final" class="btn-primary speed-entry from-bottom delay-4" style="display:inline-flex;margin-top:10px;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       Je veux tester la RSQ8
     </a>
@@ -1119,25 +1195,25 @@ footer {
 </section>
 
 <!-- PROCESS -->
-<section id="process">
-  <div class="benefits-header reveal">
+<section id="process" class="streak-wrap">
+  <div class="benefits-header speed-entry from-left">
     <p class="section-eyebrow">Comment ça marche</p>
     <h2 class="section-title">Simple.<br>En 3 étapes.</h2>
   </div>
   <div class="process-steps">
-    <div class="step reveal">
+    <div class="step speed-entry from-left delay-1">
       <div class="step-num">01</div>
       <h3 class="step-title">Réservez votre place</h3>
       <p class="step-desc">Sélectionnez votre créneau parmi les 6 places restantes. Aucun paiement requis à cette étape — juste votre nom et vos coordonnées.</p>
       <span class="step-tag">Gratuit · Immédiat</span>
     </div>
-    <div class="step reveal">
+    <div class="step speed-entry from-bottom delay-2">
       <div class="step-num">02</div>
       <h3 class="step-title">Vivez la RSQ8 7 jours</h3>
       <p class="step-desc">La RSQ8 est livrée à votre domicile. Conduisez-la dans votre quotidien : ville, autoroute, weekend. Aucune restriction. C'est votre voiture pendant 7 jours.</p>
       <span class="step-tag">Livraison incluse</span>
     </div>
-    <div class="step reveal">
+    <div class="step speed-entry from-right delay-3">
       <div class="step-num">03</div>
       <h3 class="step-title">Décidez en toute liberté</h3>
       <p class="step-desc">Au terme des 7 jours, deux options : achetez la RSQ8 au tarif exclusif négocié, ou restituez-la sans frais. Aucune pression. La décision vous appartient.</p>
@@ -1147,18 +1223,18 @@ footer {
 </section>
 
 <!-- FINAL CTA -->
-<section id="cta-final">
+<section id="cta-final" class="streak-wrap">
   <div class="cta-bg-lines"></div>
   <div class="cta-inner">
-    <div class="cta-tag reveal">
+    <div class="cta-tag speed-entry zoom-in">
       <span class="dot"></span>
       6 places restantes · Offre limitée
     </div>
-    <h2 class="cta-title reveal">
+    <h2 class="cta-title speed-entry from-bottom delay-1">
       Démarrer mon<br><em>essai de 7 jours.</em>
     </h2>
-    <p class="cta-sub reveal">Réservez maintenant, gratuitement. La RSQ8 vous attend — et les 6 dernières places partent vite.</p>
-    <div class="cta-btns reveal">
+    <p class="cta-sub speed-entry from-bottom delay-2">Réservez maintenant, gratuitement. La RSQ8 vous attend — et les 6 dernières places partent vite.</p>
+    <div class="cta-btns speed-entry from-bottom delay-3">
       <a href="#" class="btn-primary-lg">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         Réserver mon essai gratuit
@@ -1297,7 +1373,7 @@ document.querySelectorAll('.mobile-link,.mobile-menu .nav-cta').forEach(el=>{
   el.addEventListener('click',()=>{ ham.classList.remove('open'); mob.classList.remove('open'); });
 });
 
-// ── REVEAL + COUNT-UP
+// ── REVEAL + COUNT-UP (stats items keep .reveal class)
 const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting) return;
@@ -1319,11 +1395,23 @@ const obs=new IntersectionObserver(entries=>{
 },{threshold:.15,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-// ── H-REVEAL wipe
-const hObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('entered'); hObs.unobserve(e.target); } });
-},{threshold:.2});
-document.querySelectorAll('.h-reveal').forEach(el=>hObs.observe(el));
+// ── SPEED-ENTRY observer
+const speedObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    e.target.classList.add('entered');
+    speedObs.unobserve(e.target);
+  });
+},{threshold:.1, rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.speed-entry').forEach(el=>speedObs.observe(el));
+
+// ── STREAK wipe observer
+const streakObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('entered'); streakObs.unobserve(e.target); }
+  });
+},{threshold:.05});
+document.querySelectorAll('.streak-wrap,.section-swoosh').forEach(el=>streakObs.observe(el));
 
 // ── PARALLAX hero
 window.addEventListener('scroll',()=>{
