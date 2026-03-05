@@ -216,7 +216,7 @@ nav.scrolled {
   z-index: 1;
 }
 
-/* ── PROMISE STRIP ── */
+/* Hero content */
 .hero-content {
   position: relative; z-index: 2;
   display: flex; flex-direction: column;
@@ -236,6 +236,15 @@ nav.scrolled {
   animation: fadeUp 1s ease .2s both;
 }
 .hero-offer-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--red); animation: blink 1.5s infinite; }
+
+/* ── PROMISE STRIP ── */
+#promise {
+  position: relative; z-index: 1;
+  padding: 72px 6%; text-align: center;
+  background: var(--carbon);
+  border-top: 1px solid rgba(232,230,225,.05);
+  border-bottom: 1px solid rgba(232,230,225,.05);
+}
 
 .hero-title {
   font-family: 'Outfit', sans-serif;
@@ -726,6 +735,135 @@ footer {
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
+/* Speed lines canvas */
+.speed-canvas {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  animation: speedFadeIn 2s ease 1s forwards;
+}
+@keyframes speedFadeIn { to { opacity: 1; } }
+
+/* Magnetic button ripple */
+.btn-primary.magnetic { overflow: hidden; }
+.btn-primary .ripple {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  transform: scale(0); animation: rippleAnim .6s linear;
+  pointer-events: none;
+}
+@keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+/* Horizontal reveal lines on section entries */
+.h-reveal {
+  position: relative; overflow: hidden;
+}
+.h-reveal::before {
+  content: ''; position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: var(--red);
+  transition: left .4s cubic-bezier(.77,0,.18,1);
+  z-index: 1;
+}
+.h-reveal.entered::before { left: 100%; }
+.h-reveal > * { position: relative; z-index: 2; }
+
+/* Stats strip */
+#stats {
+  position: relative; z-index: 1;
+  background: var(--black);
+  border-top: 1px solid rgba(232,230,225,.05);
+  border-bottom: 1px solid rgba(232,230,225,.05);
+  padding: 48px 6%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background-color: rgba(232,230,225,.05);
+}
+.stat-item {
+  background: var(--black);
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+}
+.stat-item::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 20%; right: 20%; height: 1px;
+  background: var(--red);
+  transform: scaleX(0); transition: transform .6s ease;
+}
+.stat-item.visible::after { transform: scaleX(1); }
+.stat-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700; line-height: 1;
+  color: var(--white); letter-spacing: -.04em;
+}
+.stat-unit {
+  display: inline; font-size: .5em; font-weight: 300;
+  color: rgba(232,230,225,.4); letter-spacing: .1em;
+}
+.stat-label {
+  font-size: .6rem; font-weight: 300;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(232,230,225,.3); margin-top: 8px;
+}
+
+/* Marquee strip */
+.marquee-wrap {
+  position: relative; z-index: 1;
+  overflow: hidden;
+  background: var(--red);
+  padding: 13px 0;
+  border-top: none;
+}
+.marquee-track {
+  display: flex; gap: 0;
+  animation: marqueeScroll 22s linear infinite;
+  white-space: nowrap;
+}
+.marquee-track span {
+  font-size: .65rem; font-weight: 500;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(255,255,255,.9);
+  padding: 0 36px;
+}
+.marquee-track span::after {
+  content: '·'; margin-left: 36px;
+  color: rgba(255,255,255,.4);
+}
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Floating spec panel */
+.spec-float {
+  position: absolute;
+  top: 50%; right: 7%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: flex; flex-direction: column; gap: 3px;
+  animation: fadeUp 1s ease 1.2s both;
+}
+.spec-float-item {
+  display: flex; flex-direction: column; align-items: flex-end;
+  border-right: 2px solid rgba(196,18,48,.5);
+  padding-right: 14px;
+}
+.spec-float-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(.9rem, 2vw, 1.3rem);
+  font-weight: 700; color: var(--white);
+  letter-spacing: -.02em; line-height: 1.1;
+}
+.spec-float-lbl {
+  font-size: .52rem; font-weight: 300;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(232,230,225,.35);
+}
+
 /* ── MOBILE ── */
 @media (max-width: 860px) {
   .nav-links, .nav-cta { display: none; }
@@ -734,6 +872,8 @@ footer {
   .process-steps { grid-template-columns: 1fr; }
   body { cursor: auto; }
   .cursor, .cursor-wheel { display: none; }
+  #stats { grid-template-columns: repeat(2,1fr); }
+  .spec-float { display: none; }
 }
 @media (max-width: 540px) {
   .hero-title { font-size: clamp(2.8rem, 14vw, 4.5rem); }
@@ -797,17 +937,35 @@ footer {
 <!-- HERO -->
 <section id="hero">
 
-  <!-- Hero photo background -->
+  <!-- Hero photo — Audi RSQ8 (Martin Katler / Unsplash known RSQ8 shots) -->
   <div class="hero-photo">
     <img
-      src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1800&auto=format&fit=crop&q=80"
+      id="heroImg"
+      src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=1920&auto=format&fit=crop&q=85"
       alt="Audi RSQ8"
       class="hero-img"
-      onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=1800&auto=format&fit=crop&q=80'"
     />
     <div class="hero-vignette"></div>
     <div class="hero-gradient-bottom"></div>
     <div class="hero-gradient-top"></div>
+    <!-- Speed lines overlay -->
+    <canvas id="speedCanvas" class="speed-canvas"></canvas>
+  </div>
+
+  <!-- Floating specs -->
+  <div class="spec-float">
+    <div class="spec-float-item">
+      <span class="spec-float-val">600<span style="font-size:.6em;font-weight:300;color:rgba(232,230,225,.4)"> ch</span></span>
+      <span class="spec-float-lbl">Puissance</span>
+    </div>
+    <div class="spec-float-item" style="margin-top:10px">
+      <span class="spec-float-val">3.8<span style="font-size:.6em;font-weight:300;color:rgba(232,230,225,.4)"> s</span></span>
+      <span class="spec-float-lbl">0 — 100</span>
+    </div>
+    <div class="spec-float-item" style="margin-top:10px">
+      <span class="spec-float-val">305<span style="font-size:.6em;font-weight:300;color:rgba(232,230,225,.4)"> km/h</span></span>
+      <span class="spec-float-lbl">V-max</span>
+    </div>
   </div>
 
   <div class="hero-content">
@@ -822,9 +980,9 @@ footer {
     <div class="hero-divider"></div>
     <p class="hero-subtitle">Testez gratuitement pendant 7 jours avant d'acheter — sans engagement, sans pression.</p>
     <div class="hero-cta-group">
-      <a href="#cta-final" class="btn-primary">
+      <a href="#cta-final" class="btn-primary magnetic" id="mainCta">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        Réserver mon essai gratuit
+        <span>Réserver mon essai gratuit</span>
       </a>
       <a href="#process" class="btn-ghost">Comment ça marche ↓</a>
     </div>
@@ -839,6 +997,38 @@ footer {
     <span>Scroll</span>
   </div>
 </section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marqueeTrack">
+    <span>RSQ8 Essai Gratuit</span><span>7 Jours Sans Engagement</span>
+    <span>6 Places Restantes</span><span>Prix Exclusif Négocié</span>
+    <span>Livraison à Domicile</span><span>600 Chevaux</span>
+    <span>RSQ8 Essai Gratuit</span><span>7 Jours Sans Engagement</span>
+    <span>6 Places Restantes</span><span>Prix Exclusif Négocié</span>
+    <span>Livraison à Domicile</span><span>600 Chevaux</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="count-up" data-target="600">0</span><span class="stat-unit"> ch</span></div>
+    <div class="stat-label">Puissance moteur</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="count-up" data-target="3" data-decimal="1">0</span><span class="stat-unit"> sec</span></div>
+    <div class="stat-label">0 à 100 km/h</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="count-up" data-target="305">0</span><span class="stat-unit"> km/h</span></div>
+    <div class="stat-label">Vitesse maximale</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num"><span class="count-up" data-target="7">0</span><span class="stat-unit"> jours</span></div>
+    <div class="stat-label">Essai offert gratuit</div>
+  </div>
+</div>
 
 <!-- PROMISE -->
 <section id="promise">
@@ -992,16 +1182,67 @@ footer {
 </footer>
 
 <script>
-// CURSOR (Audi wheel)
+// ── PHOTO FALLBACK CYCLE — real Audi RSQ8/Q8 shots
+(function(){
+  const pool = [
+    'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=1920&auto=format&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=1920&auto=format&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1920&auto=format&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1920&auto=format&fit=crop&q=85',
+  ];
+  const el = document.getElementById('heroImg');
+  if(!el) return;
+  let idx = 0;
+  el.onerror = function(){
+    idx++;
+    if(idx < pool.length){ el.src = pool[idx]; }
+    else { el.onerror = null; }
+  };
+})();
+
+// ── SPEED LINES CANVAS
+(function(){
+  const canvas = document.getElementById('speedCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, lines = [];
+  function resize(){ W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+  function spawn(){
+    lines = [];
+    for(let i=0;i<60;i++) lines.push({
+      x: Math.random()*W, y: Math.random()*H,
+      len: Math.random()*100+30,
+      speed: Math.random()*5+2,
+      opacity: Math.random()*0.06+0.015,
+      w: Math.random()*0.8+0.2,
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    lines.forEach(l=>{
+      const g = ctx.createLinearGradient(l.x,l.y,l.x-l.len,l.y);
+      g.addColorStop(0,`rgba(232,230,225,${l.opacity})`);
+      g.addColorStop(1,'rgba(232,230,225,0)');
+      ctx.beginPath(); ctx.moveTo(l.x,l.y); ctx.lineTo(l.x-l.len,l.y);
+      ctx.strokeStyle=g; ctx.lineWidth=l.w; ctx.stroke();
+      l.x -= l.speed;
+      if(l.x+l.len < 0){ l.x=W+l.len; l.y=Math.random()*H; }
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{ resize(); spawn(); });
+  resize(); spawn(); draw();
+})();
+
+// ── CURSOR — Audi wheel
 const cursor = document.getElementById('cursor');
 const wheelCursor = document.getElementById('cursorWheel');
-if (window.matchMedia('(pointer:fine)').matches && cursor) {
+if(window.matchMedia('(pointer:fine)').matches && cursor){
   let mx=0,my=0,rx=0,ry=0,angle=0;
-  document.addEventListener('mousemove', e=>{
-    const dx = e.clientX - mx;
-    mx=e.clientX; my=e.clientY;
-    angle += dx * 0.8;
-    wheelCursor.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
+  document.addEventListener('mousemove',e=>{
+    const dx=e.clientX-mx; mx=e.clientX; my=e.clientY;
+    angle+=dx*0.8;
+    wheelCursor.style.transform=`translate(-50%,-50%) rotate(${angle}deg)`;
   });
   (function loop(){
     rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
@@ -1015,59 +1256,79 @@ if (window.matchMedia('(pointer:fine)').matches && cursor) {
   });
 }
 
-// GLITCH effect on "Décidez ensuite." every 5s
+// ── MAGNETIC CTA + RIPPLE
 (function(){
-  const el = document.getElementById('glitchLine');
-  if(!el) return;
-  function triggerGlitch(){
-    el.classList.remove('active');
-    void el.offsetWidth; // reflow
-    el.classList.add('active');
-    setTimeout(()=>el.classList.remove('active'), 600);
-  }
-  setTimeout(triggerGlitch, 3000);
-  setInterval(triggerGlitch, 5000);
+  const btn = document.getElementById('mainCta');
+  if(!btn||!window.matchMedia('(pointer:fine)').matches) return;
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const dx=e.clientX-(r.left+r.width/2);
+    const dy=e.clientY-(r.top+r.height/2);
+    btn.style.transform=`translate(${dx*.18}px,${dy*.22}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>{ btn.style.transform=''; });
+  btn.addEventListener('click',e=>{
+    const r=btn.getBoundingClientRect();
+    const rpl=document.createElement('span');
+    rpl.classList.add('ripple');
+    const size=Math.max(r.width,r.height);
+    rpl.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-r.left-size/2}px;top:${e.clientY-r.top-size/2}px`;
+    btn.appendChild(rpl);
+    setTimeout(()=>rpl.remove(),700);
+  });
 })();
 
-// NAV SCROLL
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll',()=>{
-  navbar.classList.toggle('scrolled', window.scrollY>60);
-});
+// ── GLITCH "Décidez ensuite." every 5s
+(function(){
+  const el=document.getElementById('glitchLine');
+  if(!el) return;
+  function go(){ el.classList.remove('active'); void el.offsetWidth; el.classList.add('active'); setTimeout(()=>el.classList.remove('active'),600); }
+  setTimeout(go,3000); setInterval(go,5000);
+})();
 
-// HAMBURGER
-const ham = document.getElementById('hamburger');
-const mob = document.getElementById('mobileMenu');
-ham.addEventListener('click',()=>{
-  ham.classList.toggle('open');
-  mob.classList.toggle('open');
-});
+// ── NAV SCROLL
+const navbar=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{ navbar.classList.toggle('scrolled',window.scrollY>60); });
+
+// ── HAMBURGER
+const ham=document.getElementById('hamburger'), mob=document.getElementById('mobileMenu');
+ham.addEventListener('click',()=>{ ham.classList.toggle('open'); mob.classList.toggle('open'); });
 document.querySelectorAll('.mobile-link,.mobile-menu .nav-cta').forEach(el=>{
-  el.addEventListener('click',()=>{
-    ham.classList.remove('open');
-    mob.classList.remove('open');
-  });
+  el.addEventListener('click',()=>{ ham.classList.remove('open'); mob.classList.remove('open'); });
 });
 
-// REVEAL
-const obs = new IntersectionObserver(entries=>{
+// ── REVEAL + COUNT-UP
+const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
-    if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+    if(!e.isIntersecting) return;
+    const t=e.target; t.classList.add('visible');
+    t.querySelectorAll('.count-up').forEach(num=>{
+      const target=parseFloat(num.dataset.target);
+      const dec=num.dataset.decimal;
+      const dur=1600; const start=performance.now();
+      (function step(now){
+        const p=Math.min((now-start)/dur,1);
+        const ease=1-Math.pow(1-p,3);
+        num.textContent=dec?(target*ease).toFixed(1):Math.round(target*ease);
+        if(p<1) requestAnimationFrame(step);
+        else num.textContent=dec?target.toFixed(1):target;
+      })(performance.now());
+    });
+    obs.unobserve(t);
   });
-},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+},{threshold:.15,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-// CAR WHEEL SPIN on scroll
-let lastScroll = 0;
+// ── H-REVEAL wipe
+const hObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('entered'); hObs.unobserve(e.target); } });
+},{threshold:.2});
+document.querySelectorAll('.h-reveal').forEach(el=>hObs.observe(el));
+
+// ── PARALLAX hero
 window.addEventListener('scroll',()=>{
-  const delta = window.scrollY - lastScroll;
-  lastScroll = window.scrollY;
-  // subtle parallax on hero car
-  const car = document.querySelector('.car-wrap');
-  if(car){
-    const offset = window.scrollY * 0.15;
-    car.style.transform = `translateY(${offset}px)`;
-  }
+  const img=document.querySelector('.hero-img');
+  if(img) img.style.transform=`scale(1.06) translateY(${window.scrollY*.1}px)`;
 });
 </script>
 </body>
