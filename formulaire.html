@@ -7,17 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <style>
 
-/* ── TOKENS (identiques à la landing) ── */
+/* ── TOKENS ── */
 :root {
   --black:   #080808;
   --carbon:  #111214;
-  --graphite:#1c1e22;
-  --steel:   #2e3035;
-  --silver:  #9a9ea8;
   --pearl:   #e8e6e1;
   --white:   #f5f3ef;
   --red:     #c41230;
-  --red-dim: rgba(196,18,48,0.15);
 }
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -39,7 +35,24 @@ body::before {
   content:'';
   position:fixed; inset:0; z-index:0; pointer-events:none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  opacity:0.025;
+  opacity:0.028;
+}
+
+/* ── VIDEO BACKGROUND ── */
+.video-bg {
+  position:fixed; inset:0; z-index:0; overflow:hidden;
+}
+.video-bg video {
+  width:100%; height:100%;
+  object-fit:cover; object-position:center;
+  filter:brightness(.25) contrast(1.1) saturate(.55);
+}
+.video-bg::after {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 15%, rgba(8,8,8,.72) 100%),
+    linear-gradient(to right, rgba(8,8,8,.9) 0%, rgba(8,8,8,.15) 35%, rgba(8,8,8,.15) 65%, rgba(8,8,8,.9) 100%),
+    linear-gradient(to bottom, rgba(8,8,8,.5) 0%, transparent 20%, transparent 80%, rgba(8,8,8,.6) 100%);
 }
 
 /* ── CURSOR ── */
@@ -56,10 +69,10 @@ body::before {
   transition:width .2s, height .2s;
 }
 
-/* ── SPEED LINES BG ── */
+/* ── SPEED LINES ── */
 .speed-bg {
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-  opacity:0.5;
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  opacity:0.45;
 }
 
 /* ── NAV ── */
@@ -68,14 +81,11 @@ nav {
   padding:0 6%; height:68px;
   display:flex; align-items:center; justify-content:space-between;
   border-bottom:1px solid rgba(232,230,225,.06);
-  background:rgba(8,8,8,.9);
+  background:rgba(8,8,8,.88);
   backdrop-filter:blur(20px);
   flex-shrink:0;
 }
-.nav-logo {
-  display:flex; align-items:center; gap:11px;
-  text-decoration:none;
-}
+.nav-logo { display:flex; align-items:center; gap:11px; text-decoration:none; }
 .nav-rings { display:flex; }
 .nav-rings span {
   display:block; width:16px; height:16px;
@@ -85,47 +95,41 @@ nav {
 .nav-rings span:first-child { margin-left:0; }
 .nav-wordmark {
   font-weight:600; font-size:.75rem;
-  letter-spacing:.32em; text-transform:uppercase;
-  color:var(--pearl);
+  letter-spacing:.32em; text-transform:uppercase; color:var(--pearl);
 }
 .nav-back {
   font-size:.62rem; font-weight:300;
   letter-spacing:.18em; text-transform:uppercase;
   color:rgba(232,230,225,.35); text-decoration:none;
-  display:flex; align-items:center; gap:8px;
-  transition:color .2s;
+  display:flex; align-items:center; gap:8px; transition:color .2s;
 }
 .nav-back:hover { color:var(--pearl); }
 .nav-back svg { transition:transform .2s; }
 .nav-back:hover svg { transform:translateX(-3px); }
 
-/* ── MAIN LAYOUT ── */
+/* ── MAIN ── */
 main {
   position:relative; z-index:2;
   flex:1;
-  display:flex; align-items:center; justify-content:center;
-  padding:60px 24px 80px;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:52px 24px 80px;
 }
 
 /* ── FORM CARD ── */
 .form-card {
-  width:100%; max-width:560px;
+  width:100%; max-width:600px;
   position:relative;
 }
-
-/* Red accent line top */
 .form-card::before {
-  content:'';
-  position:absolute; top:0; left:0; right:0; height:2px;
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
   background:linear-gradient(90deg, var(--red), rgba(196,18,48,0));
+  z-index:1;
 }
-
-/* Glassmorphism card */
 .form-inner {
-  background:rgba(17,18,20,.85);
+  background:rgba(11,12,14,.9);
   border:1px solid rgba(232,230,225,.07);
   border-top:none;
-  backdrop-filter:blur(24px);
+  backdrop-filter:blur(28px);
   padding:52px 48px 48px;
   animation:cardIn .9s cubic-bezier(.16,1,.3,1) both;
 }
@@ -141,10 +145,7 @@ main {
   letter-spacing:.3em; text-transform:uppercase;
   color:rgba(232,230,225,.25); margin-bottom:14px;
 }
-.form-eyebrow::before {
-  content:''; width:24px; height:1px;
-  background:rgba(232,230,225,.2);
-}
+.form-eyebrow::before { content:''; width:24px; height:1px; background:rgba(232,230,225,.2); }
 .form-title {
   font-family:'Cormorant Garamond', serif;
   font-size:clamp(2rem,6vw,3rem);
@@ -155,81 +156,92 @@ main {
 .form-sub {
   font-size:.8rem; font-weight:300;
   color:rgba(232,230,225,.38); line-height:1.7;
-  letter-spacing:.02em; margin-bottom:44px;
+  letter-spacing:.02em; margin-bottom:36px;
 }
-
-/* Divider */
 .form-divider {
-  width:36px; height:1px;
-  background:var(--red);
+  width:36px; height:1px; background:var(--red);
   margin-bottom:36px;
   animation:dividerGrow .8s cubic-bezier(.16,1,.3,1) .4s both;
 }
 @keyframes dividerGrow { from{width:0} to{width:36px} }
 
-/* ── FIELDS ── */
-.field {
-  margin-bottom:24px;
-  animation:fieldIn .7s cubic-bezier(.16,1,.3,1) both;
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size:.55rem; font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--red); opacity:.75;
+  margin:28px 0 18px;
+  display:flex; align-items:center; gap:10px;
 }
-.field:nth-child(1) { animation-delay:.15s; }
-.field:nth-child(2) { animation-delay:.25s; }
-.field:nth-child(3) { animation-delay:.35s; }
-.field:nth-child(4) { animation-delay:.45s; }
+.section-label:first-child { margin-top:0; }
+.section-label::after {
+  content:''; flex:1; height:1px;
+  background:rgba(196,18,48,.18);
+}
+
+/* ── FIELDS ── */
+.field { margin-bottom:20px; animation:fieldIn .7s cubic-bezier(.16,1,.3,1) both; }
+.field:nth-child(1){animation-delay:.10s} .field:nth-child(2){animation-delay:.17s}
+.field:nth-child(3){animation-delay:.24s} .field:nth-child(4){animation-delay:.31s}
+.field:nth-child(5){animation-delay:.38s} .field:nth-child(6){animation-delay:.45s}
+.field:nth-child(7){animation-delay:.52s} .field:nth-child(8){animation-delay:.59s}
 @keyframes fieldIn {
-  from { opacity:0; transform:translateX(-20px); }
+  from { opacity:0; transform:translateX(-18px); }
   to   { opacity:1; transform:none; }
 }
 
+.field-row {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+}
+
 label {
-  display:block;
-  font-size:.6rem; font-weight:400;
+  display:block; font-size:.58rem; font-weight:400;
   letter-spacing:.22em; text-transform:uppercase;
-  color:rgba(232,230,225,.35); margin-bottom:9px;
+  color:rgba(232,230,225,.32); margin-bottom:9px;
+}
+label .opt {
+  font-size:.5rem; color:rgba(232,230,225,.18);
+  letter-spacing:.1em; margin-left:5px;
+  text-transform:none; font-style:italic;
 }
 
 input[type="text"],
 input[type="email"],
+input[type="number"],
 select {
   width:100%; background:rgba(255,255,255,.03);
-  border:1px solid rgba(232,230,225,.1);
+  border:1px solid rgba(232,230,225,.09);
   color:var(--pearl);
   font-family:'Outfit', sans-serif;
-  font-size:.9rem; font-weight:300;
-  padding:14px 18px;
-  outline:none;
+  font-size:.88rem; font-weight:300;
+  padding:13px 16px; outline:none;
   transition:border-color .25s, background .25s, box-shadow .25s;
   appearance:none; -webkit-appearance:none;
 }
 input[type="text"]:focus,
 input[type="email"]:focus,
+input[type="number"]:focus,
 select:focus {
-  border-color:rgba(196,18,48,.6);
-  background:rgba(196,18,48,.04);
-  box-shadow:0 0 0 3px rgba(196,18,48,.08);
+  border-color:rgba(196,18,48,.55);
+  background:rgba(196,18,48,.035);
+  box-shadow:0 0 0 3px rgba(196,18,48,.07);
 }
-input::placeholder { color:rgba(232,230,225,.2); }
+input::placeholder { color:rgba(232,230,225,.18); }
 
-/* Custom select arrow */
 .select-wrap { position:relative; }
 .select-wrap::after {
-  content:'';
-  position:absolute; right:18px; top:50%;
-  transform:translateY(-50%);
-  width:8px; height:8px;
-  border-right:1px solid rgba(232,230,225,.3);
-  border-bottom:1px solid rgba(232,230,225,.3);
+  content:''; position:absolute; right:16px; top:46%;
+  width:7px; height:7px;
+  border-right:1px solid rgba(232,230,225,.28);
+  border-bottom:1px solid rgba(232,230,225,.28);
   transform:translateY(-65%) rotate(45deg);
   pointer-events:none;
 }
-select option {
-  background:var(--carbon);
-  color:var(--pearl);
-}
+select option, select optgroup { background:var(--carbon); color:var(--pearl); }
 
-/* ── SUBMIT BUTTON ── */
+/* ── SUBMIT ── */
 .btn-submit {
-  width:100%; margin-top:8px;
+  width:100%; margin-top:12px;
   display:inline-flex; align-items:center; justify-content:center; gap:12px;
   background:var(--red); color:#fff;
   font-family:'Outfit', sans-serif;
@@ -238,7 +250,7 @@ select option {
   border:none; padding:18px 40px;
   cursor:none; position:relative; overflow:hidden;
   transition:transform .2s, box-shadow .3s;
-  animation:fieldIn .7s cubic-bezier(.16,1,.3,1) .55s both;
+  animation:fieldIn .7s cubic-bezier(.16,1,.3,1) .65s both;
 }
 .btn-submit::before {
   content:''; position:absolute; inset:0;
@@ -246,10 +258,7 @@ select option {
   transform:translateX(-100%); transition:transform .5s;
 }
 .btn-submit:hover::before { transform:translateX(100%); }
-.btn-submit:hover {
-  transform:translateY(-2px);
-  box-shadow:0 16px 50px rgba(196,18,48,.35);
-}
+.btn-submit:hover { transform:translateY(-2px); box-shadow:0 16px 50px rgba(196,18,48,.35); }
 .btn-submit .ripple {
   position:absolute; border-radius:50%;
   background:rgba(255,255,255,.2);
@@ -258,100 +267,72 @@ select option {
 }
 @keyframes rippleAnim { to { transform:scale(4); opacity:0; } }
 
-/* ── BACK LINK ── */
 .btn-back {
   display:flex; align-items:center; justify-content:center; gap:8px;
-  margin-top:16px; width:100%;
+  margin-top:14px; width:100%;
   font-size:.62rem; font-weight:300;
   letter-spacing:.18em; text-transform:uppercase;
   color:rgba(232,230,225,.28); text-decoration:none;
-  border:1px solid rgba(232,230,225,.08);
-  padding:13px;
+  border:1px solid rgba(232,230,225,.07); padding:13px;
   transition:color .2s, border-color .2s;
-  animation:fieldIn .7s cubic-bezier(.16,1,.3,1) .65s both;
+  animation:fieldIn .7s cubic-bezier(.16,1,.3,1) .72s both;
 }
 .btn-back:hover { color:var(--pearl); border-color:rgba(232,230,225,.2); }
 
-/* ── SCARCITY PILL ── */
+/* ── SCARCITY ── */
 .scarcity-pill {
   display:flex; align-items:center; justify-content:center; gap:8px;
-  margin-top:28px;
-  font-size:.58rem; font-weight:400;
+  margin-top:26px;
+  font-size:.57rem; font-weight:400;
   letter-spacing:.16em; text-transform:uppercase;
-  color:rgba(232,230,225,.28);
-  animation:fieldIn .7s .75s both;
+  color:rgba(232,230,225,.26);
+  animation:fieldIn .7s .8s both;
 }
 .scarcity-dot {
   width:5px; height:5px; border-radius:50%;
-  background:var(--red);
-  animation:blink 1.4s ease-in-out infinite;
+  background:var(--red); animation:blink 1.4s ease-in-out infinite;
 }
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.15;} }
 
-/* ── SIDE DECO (desktop) ── */
-.side-deco {
-  position:fixed; left:5%; top:50%;
-  transform:translateY(-50%);
-  z-index:2;
-  display:flex; flex-direction:column; gap:3px;
-  opacity:0; animation:fadeIn 1s ease 1s forwards;
-}
-.side-deco-line {
-  width:1px; height:60px;
-  background:linear-gradient(to bottom, transparent, rgba(196,18,48,.4), transparent);
-}
-.side-deco-text {
-  font-size:.5rem; font-weight:300;
-  letter-spacing:.32em; text-transform:uppercase;
-  color:rgba(232,230,225,.12);
-  writing-mode:vertical-rl;
-  margin-top:12px;
-}
-@keyframes fadeIn { to { opacity:1; } }
-
-/* ── STEP INDICATOR ── */
-.steps {
-  display:flex; align-items:center; gap:0;
-  margin-bottom:36px;
-}
-.step-item {
-  display:flex; align-items:center; gap:8px;
-}
+/* ── STEPS ── */
+.steps { display:flex; align-items:center; margin-bottom:36px; }
+.step-item { display:flex; align-items:center; gap:8px; }
 .step-num {
   width:22px; height:22px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   font-size:.55rem; font-weight:600;
-  letter-spacing:.06em;
-  border:1px solid rgba(196,18,48,.5);
-  color:var(--red);
-  flex-shrink:0;
+  border:1px solid rgba(196,18,48,.5); color:var(--red); flex-shrink:0;
 }
 .step-num.done { background:var(--red); color:#fff; border-color:var(--red); }
-.step-label {
-  font-size:.55rem; letter-spacing:.14em;
-  text-transform:uppercase; color:rgba(232,230,225,.3);
-  white-space:nowrap;
-}
+.step-label { font-size:.55rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(232,230,225,.3); white-space:nowrap; }
 .step-label.active { color:var(--pearl); }
-.step-sep {
-  flex:1; height:1px;
-  background:rgba(232,230,225,.08);
-  margin:0 14px;
-  min-width:30px;
-}
+.step-sep { flex:1; height:1px; background:rgba(232,230,225,.08); margin:0 14px; min-width:28px; }
 
-@media (max-width:600px) {
-  .form-inner { padding:36px 24px 32px; }
+/* ── SIDE DECO ── */
+.side-deco {
+  position:fixed; left:5%; top:50%; transform:translateY(-50%);
+  z-index:3; display:flex; flex-direction:column; gap:3px;
+  opacity:0; animation:fadeIn 1s ease 1s forwards;
+}
+.side-deco-line { width:1px; height:60px; background:linear-gradient(to bottom, transparent, rgba(196,18,48,.4), transparent); }
+.side-deco-text {
+  font-size:.5rem; font-weight:300; letter-spacing:.32em; text-transform:uppercase;
+  color:rgba(232,230,225,.12); writing-mode:vertical-rl; margin-top:12px;
+}
+@keyframes fadeIn { to { opacity:1; } }
+
+@media (max-width:640px) {
+  .form-inner { padding:36px 22px 32px; }
+  .field-row { grid-template-columns:1fr; gap:0; }
   body { cursor:auto; }
-  .cursor,.cursor-wheel { display:none; }
-  .side-deco { display:none; }
+  .cursor,.cursor-wheel,.side-deco { display:none; }
   .steps .step-label { display:none; }
 }
 </style>
 </head>
 <body>
 
-<!-- CUSTOM CURSOR -->
+<!-- CURSOR -->
 <div class="cursor" id="cursor"></div>
 <svg class="cursor-wheel" id="cursorWheel" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="20" cy="20" r="19" stroke="rgba(232,230,225,0.35)" stroke-width="1.5" fill="none"/>
@@ -359,21 +340,28 @@ select option {
   <circle cx="20" cy="20" r="11" stroke="rgba(232,230,225,0.45)" stroke-width="1" fill="rgba(20,20,22,0.6)"/>
   <line x1="20" y1="9"  x2="20" y2="14" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
   <line x1="29.5" y1="14.5" x2="25.7" y2="17.2" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="26" y1="26"   x2="22.9" y2="23.5" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="14" y1="26"   x2="17.1" y2="23.5" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="26"   y1="26"   x2="22.9" y2="23.5" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="14"   y1="26"   x2="17.1" y2="23.5" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
   <line x1="10.5" y1="14.5" x2="14.3" y2="17.2" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
   <circle cx="20" cy="20" r="3" fill="rgba(196,18,48,0.9)"/>
 </svg>
 
-<!-- SPEED LINES CANVAS -->
+<!-- VIDEO BACKGROUND — Pexels free luxury car footage -->
+<div class="video-bg">
+  <video autoplay muted loop playsinline>
+    <source src="https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4" type="video/mp4">
+    <source src="https://videos.pexels.com/video-files/4763825/4763825-uhd_2560_1440_25fps.mp4" type="video/mp4">
+    <source src="https://videos.pexels.com/video-files/2519660/2519660-uhd_2560_1440_24fps.mp4" type="video/mp4">
+  </video>
+</div>
+
+<!-- SPEED LINES -->
 <canvas class="speed-bg" id="speedBg"></canvas>
 
 <!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">
-    <div class="nav-rings">
-      <span></span><span></span><span></span><span></span>
-    </div>
+    <div class="nav-rings"><span></span><span></span><span></span><span></span></div>
     <span class="nav-wordmark">Audi <span style="opacity:.3;font-weight:200">RSQ8</span></span>
   </a>
   <a href="index.html" class="nav-back">
@@ -395,7 +383,7 @@ select option {
   <div class="form-card">
     <div class="form-inner">
 
-      <!-- Step indicator -->
+      <!-- Steps -->
       <div class="steps">
         <div class="step-item">
           <div class="step-num done">✓</div>
@@ -419,31 +407,97 @@ select option {
       <div class="form-divider"></div>
       <p class="form-sub">Remplissez ce formulaire pour sécuriser votre essai gratuit de 7 jours. Aucun paiement requis à cette étape.</p>
 
-      <!-- Form -->
+      <!-- FORM -->
       <form action="merci.html" id="mainForm">
 
-        <div class="field">
-          <label for="nom">Nom complet</label>
-          <input id="nom" type="text" placeholder="Votre nom" required>
+        <!-- ── SECTION 1 : IDENTITÉ ── -->
+        <p class="section-label">Vos informations</p>
+
+        <div class="field-row field">
+          <div>
+            <label for="nom">Nom</label>
+            <input id="nom" type="text" placeholder="Dupont" required>
+          </div>
+          <div>
+            <label for="prenom">Prénom</label>
+            <input id="prenom" type="text" placeholder="Sophie" required>
+          </div>
+        </div>
+
+        <div class="field-row field">
+          <div>
+            <label for="age">Âge</label>
+            <input id="age" type="number" placeholder="28" min="18" max="99" required>
+          </div>
+          <div>
+            <label for="email">Adresse e-mail</label>
+            <input id="email" type="email" placeholder="vous@email.com" required>
+          </div>
         </div>
 
         <div class="field">
-          <label for="email">Adresse e-mail</label>
-          <input id="email" type="email" placeholder="vous@email.com" required>
+          <label for="adresse">Adresse de livraison</label>
+          <input id="adresse" type="text" placeholder="12 rue de la Paix, 75001 Paris" required>
         </div>
 
+        <!-- ── SECTION 2 : PROFIL ── -->
+        <p class="section-label">Votre profil</p>
+
         <div class="field">
-          <label for="objectif">Votre profil conductrice</label>
+          <label for="profil">Votre profil conductrice</label>
           <div class="select-wrap">
-            <select id="objectif">
-              <option value="quotidien">Conduite quotidienne & lifestyle</option>
-              <option value="weekend">Escapades & weekends</option>
-              <option value="prestige">Prestige & image de marque</option>
-              <option value="performance">Performance & sensations</option>
+            <select id="profil" required>
+              <option value="" disabled selected>Choisissez votre profil…</option>
+              <option value="quotidien">Conduite quotidienne &amp; lifestyle</option>
+              <option value="weekend">Escapades &amp; weekends</option>
+              <option value="prestige">Prestige &amp; image de marque</option>
+              <option value="performance">Performance &amp; sensations</option>
             </select>
           </div>
         </div>
 
+        <div class="field">
+          <label for="audi-actuelle">Audi déjà possédée <span class="opt">— facultatif</span></label>
+          <div class="select-wrap">
+            <select id="audi-actuelle">
+              <option value="">Je ne possède pas d'Audi actuellement</option>
+              <optgroup label="Berlines &amp; Sport">
+                <option value="a3">Audi A3</option>
+                <option value="a4">Audi A4</option>
+                <option value="a5">Audi A5</option>
+                <option value="a6">Audi A6</option>
+                <option value="a7">Audi A7</option>
+                <option value="a8">Audi A8</option>
+              </optgroup>
+              <optgroup label="SUV &amp; Crossover">
+                <option value="q2">Audi Q2</option>
+                <option value="q3">Audi Q3</option>
+                <option value="q5">Audi Q5</option>
+                <option value="q7">Audi Q7</option>
+                <option value="q8">Audi Q8</option>
+                <option value="rsq3">Audi RSQ3</option>
+                <option value="rsq5">Audi RSQ5</option>
+                <option value="rsq8">Audi RSQ8</option>
+              </optgroup>
+              <optgroup label="RS &amp; Performance">
+                <option value="rs3">Audi RS3</option>
+                <option value="rs4">Audi RS4</option>
+                <option value="rs5">Audi RS5</option>
+                <option value="rs6">Audi RS6</option>
+                <option value="rs7">Audi RS7</option>
+                <option value="tt">Audi TT / TTS / TTRS</option>
+                <option value="r8">Audi R8</option>
+              </optgroup>
+              <optgroup label="Électrique">
+                <option value="etron">Audi e-tron / Q4 e-tron</option>
+                <option value="etrongt">Audi e-tron GT / RS e-tron GT</option>
+              </optgroup>
+              <option value="autre">Autre modèle Audi</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ── SUBMIT ── -->
         <button class="btn-submit" type="submit" id="submitBtn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -451,9 +505,8 @@ select option {
           <span>Confirmer ma réservation</span>
         </button>
 
-        <a class="btn-back" href="index.html">
-          ← Retour à l'offre
-        </a>
+        <a class="btn-back" href="index.html">← Retour à l'offre</a>
+
       </form>
 
       <!-- Scarcity -->
@@ -489,7 +542,7 @@ if(window.matchMedia('(pointer:fine)').matches && cursor){
   });
 }
 
-// ── SPEED LINES (subtiles, en arrière-plan)
+// ── SPEED LINES rouges subtiles
 (function(){
   const canvas = document.getElementById('speedBg');
   if(!canvas) return;
@@ -500,10 +553,8 @@ if(window.matchMedia('(pointer:fine)').matches && cursor){
     lines=[];
     for(let i=0;i<40;i++) lines.push({
       x:Math.random()*W, y:Math.random()*H,
-      len:Math.random()*80+20,
-      speed:Math.random()*3+1,
-      opacity:Math.random()*0.04+0.01,
-      w:Math.random()*0.6+0.2,
+      len:Math.random()*80+20, speed:Math.random()*3+1,
+      opacity:Math.random()*0.04+0.01, w:Math.random()*0.6+0.2,
     });
   }
   function draw(){
@@ -523,7 +574,7 @@ if(window.matchMedia('(pointer:fine)').matches && cursor){
   resize(); spawn(); draw();
 })();
 
-// ── RIPPLE on submit button
+// ── RIPPLE on submit
 document.getElementById('submitBtn').addEventListener('click',function(e){
   const r=this.getBoundingClientRect();
   const rpl=document.createElement('span');
