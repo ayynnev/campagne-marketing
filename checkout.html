@@ -1,1 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — Audi RSQ8</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
 
+:root {
+  --black:  #080808;
+  --carbon: #111214;
+  --pearl:  #e8e6e1;
+  --white:  #f5f3ef;
+  --red:    #c41230;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--black);
+  color: var(--pearl);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── NOISE ── */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity:0.028;
+}
+
+/* ── CURSOR ── */
+.cursor { position:fixed; width:6px; height:6px; background:var(--red); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+.cursor-wheel { position:fixed; width:38px; height:38px; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .2s, height .2s; }
+
+/* ── SPEED LINES ── */
+.speed-bg { position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.45; }
+
+/* ── NAV ── */
+nav {
+  position:relative; z-index:10;
+  padding:0 6%; height:68px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(232,230,225,.06);
+  background:rgba(8,8,8,.88);
+  backdrop-filter:blur(20px);
+  flex-shrink:0;
+}
+.nav-logo { display:flex; align-items:center; gap:11px; text-decoration:none; }
+.nav-rings { display:flex; }
+.nav-rings span { display:block; width:16px; height:16px; border:1.8px solid var(--pearl); border-radius:50%; margin-left:-5px; }
+.nav-rings span:first-child { margin-left:0; }
+.nav-wordmark { font-weight:600; font-size:.75rem; letter-spacing:.32em; text-transform:uppercase; color:var(--pearl); }
+.nav-back { font-size:.62rem; font-weight:300; letter-spacing:.18em; text-transform:uppercase; color:rgba(232,230,225,.35); text-decoration:none; display:flex; align-items:center; gap:8px; transition:color .2s; }
+.nav-back:hover { color:var(--pearl); }
+.nav-back svg { transition:transform .2s; }
+.nav-back:hover svg { transform:translateX(-3px); }
+
+/* ── MAIN ── */
+main { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; align-items:center; padding:52px 24px 80px; }
+
+/* ── PAGE HEADER ── */
+.page-header { text-align:center; margin-bottom:52px; animation:cardIn .9s cubic-bezier(.16,1,.3,1) both; }
+.page-eyebrow { display:inline-flex; align-items:center; gap:10px; font-size:.58rem; font-weight:400; letter-spacing:.3em; text-transform:uppercase; color:rgba(232,230,225,.25); margin-bottom:14px; }
+.page-eyebrow::before, .page-eyebrow::after { content:''; width:24px; height:1px; background:rgba(232,230,225,.2); }
+.page-title { font-family:'Cormorant Garamond', serif; font-size:clamp(2rem,5vw,2.8rem); font-weight:300; line-height:1.05; color:var(--white); margin-bottom:10px; }
+.page-title em { font-style:italic; color:rgba(232,230,225,.4); }
+.page-sub { font-size:.78rem; font-weight:300; color:rgba(232,230,225,.38); line-height:1.7; letter-spacing:.02em; }
+
+/* ── PACKS GRID ── */
+.packs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; width:100%; max-width:960px; margin-bottom:0; }
+
+/* ── PACK CARD ── */
+.pack-card {
+  position:relative; cursor:none;
+  border:1px solid rgba(232,230,225,.07);
+  background:rgba(11,12,14,.85);
+  backdrop-filter:blur(20px);
+  overflow:hidden;
+  transition:border-color .3s, transform .3s, box-shadow .3s;
+  animation:cardIn .8s cubic-bezier(.16,1,.3,1) both;
+}
+.pack-card:nth-child(1) { animation-delay:.05s; }
+.pack-card:nth-child(2) { animation-delay:.15s; }
+.pack-card:nth-child(3) { animation-delay:.25s; }
+
+.pack-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, rgba(196,18,48,0), rgba(196,18,48,.3), rgba(196,18,48,0)); transition:opacity .3s; opacity:0; z-index:1; }
+.pack-card:hover::before, .pack-card.selected::before { opacity:1; }
+.pack-card:hover { border-color:rgba(196,18,48,.3); transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,.5); }
+.pack-card.selected { border-color:rgba(196,18,48,.6); box-shadow:0 0 0 1px rgba(196,18,48,.2), 0 20px 60px rgba(196,18,48,.12); transform:translateY(-4px); }
+.pack-card.selected::before { background:linear-gradient(90deg, rgba(196,18,48,0), var(--red), rgba(196,18,48,0)); opacity:1; }
+
+/* Badge populaire */
+.pack-badge {
+  position:absolute; top:14px; right:14px; z-index:2;
+  font-size:.48rem; font-weight:500; letter-spacing:.22em; text-transform:uppercase;
+  background:var(--red); color:#fff;
+  padding:4px 9px;
+}
+
+/* Image */
+.pack-img {
+  width:100%; height:160px; object-fit:cover; object-position:center;
+  filter:brightness(.55) contrast(1.1) saturate(.6);
+  display:block;
+  transition:filter .4s;
+}
+.pack-card:hover .pack-img,
+.pack-card.selected .pack-img { filter:brightness(.7) contrast(1.1) saturate(.75); }
+
+/* Body */
+.pack-body { padding:22px 22px 26px; }
+.pack-duration { font-size:.58rem; font-weight:400; letter-spacing:.26em; text-transform:uppercase; color:rgba(232,230,225,.3); margin-bottom:8px; }
+.pack-name { font-family:'Cormorant Garamond', serif; font-size:1.55rem; font-weight:300; color:var(--white); margin-bottom:4px; line-height:1.1; }
+.pack-desc { font-size:.72rem; font-weight:300; color:rgba(232,230,225,.35); line-height:1.6; margin-bottom:20px; }
+.pack-price { display:flex; align-items:baseline; gap:5px; margin-bottom:22px; }
+.pack-price-num { font-family:'Cormorant Garamond', serif; font-size:2.4rem; font-weight:300; color:var(--white); line-height:1; }
+.pack-price-cur { font-size:.9rem; font-weight:300; color:rgba(232,230,225,.5); margin-top:4px; }
+.pack-price-day { font-size:.6rem; font-weight:300; letter-spacing:.12em; text-transform:uppercase; color:rgba(232,230,225,.25); }
+.pack-perks { list-style:none; margin-bottom:22px; display:flex; flex-direction:column; gap:7px; }
+.pack-perks li { font-size:.7rem; font-weight:300; color:rgba(232,230,225,.45); display:flex; align-items:center; gap:8px; }
+.pack-perks li::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--red); opacity:.7; flex-shrink:0; }
+
+.btn-pack {
+  width:100%; padding:13px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  font-family:'Outfit', sans-serif; font-size:.65rem; font-weight:500;
+  letter-spacing:.2em; text-transform:uppercase;
+  border:1px solid rgba(232,230,225,.14); background:transparent;
+  color:rgba(232,230,225,.5); cursor:none;
+  transition:all .25s; position:relative; overflow:hidden;
+}
+.btn-pack::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent); transform:translateX(-100%); transition:transform .5s; }
+.btn-pack:hover::before { transform:translateX(100%); }
+.btn-pack:hover { border-color:rgba(232,230,225,.3); color:var(--pearl); }
+.pack-card.selected .btn-pack { border-color:var(--red); color:var(--red); background:rgba(196,18,48,.06); }
+
+/* ── CHECKOUT PANEL ── */
+.checkout-panel {
+  width:100%; max-width:960px; margin-top:0;
+  max-height:0; overflow:hidden;
+  transition:max-height .7s cubic-bezier(.16,1,.3,1), opacity .5s ease, margin .5s ease;
+  opacity:0;
+}
+.checkout-panel.open {
+  max-height:1200px; opacity:1; margin-top:32px;
+}
+
+.checkout-inner {
+  display:grid; grid-template-columns:1fr 340px; gap:24px;
+  align-items:start;
+}
+
+/* LEFT — form */
+.checkout-form-card {
+  position:relative;
+  background:rgba(11,12,14,.9);
+  border:1px solid rgba(232,230,225,.07);
+  backdrop-filter:blur(28px);
+}
+.checkout-form-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--red), rgba(196,18,48,0));
+}
+.checkout-form-body { padding:36px 36px 32px; }
+
+.section-label {
+  font-size:.55rem; font-weight:500; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--red); opacity:.75; margin:24px 0 16px;
+  display:flex; align-items:center; gap:10px;
+}
+.section-label:first-child { margin-top:0; }
+.section-label::after { content:''; flex:1; height:1px; background:rgba(196,18,48,.18); }
+
+.field { margin-bottom:18px; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+label { display:block; font-size:.58rem; font-weight:400; letter-spacing:.22em; text-transform:uppercase; color:rgba(232,230,225,.32); margin-bottom:9px; }
+
+input[type="text"],
+input[type="email"],
+input[type="number"] {
+  width:100%; background:rgba(255,255,255,.03);
+  border:1px solid rgba(232,230,225,.09);
+  color:var(--pearl); font-family:'Outfit', sans-serif;
+  font-size:.88rem; font-weight:300;
+  padding:13px 16px; outline:none;
+  transition:border-color .25s, background .25s, box-shadow .25s;
+  appearance:none; -webkit-appearance:none;
+}
+input:focus {
+  border-color:rgba(196,18,48,.55);
+  background:rgba(196,18,48,.035);
+  box-shadow:0 0 0 3px rgba(196,18,48,.07);
+}
+input::placeholder { color:rgba(232,230,225,.18); }
+
+/* card number with icon */
+.card-input-wrap { position:relative; }
+.card-input-wrap input { padding-right:50px; }
+.card-input-wrap .card-icon {
+  position:absolute; right:14px; top:50%; transform:translateY(-50%);
+  display:flex; gap:4px; pointer-events:none;
+}
+.card-chip { width:10px; height:10px; border:1px solid rgba(232,230,225,.2); border-radius:1px; }
+
+/* ── RIGHT — summary ── */
+.checkout-summary {
+  position:sticky; top:20px;
+  background:rgba(11,12,14,.9);
+  border:1px solid rgba(232,230,225,.07);
+  backdrop-filter:blur(28px);
+  padding:28px 26px 26px;
+}
+.checkout-summary::before { content:''; display:block; width:28px; height:1px; background:var(--red); margin-bottom:20px; }
+.summary-title { font-size:.58rem; font-weight:400; letter-spacing:.28em; text-transform:uppercase; color:rgba(232,230,225,.28); margin-bottom:20px; }
+.summary-pack-name { font-family:'Cormorant Garamond', serif; font-size:1.6rem; font-weight:300; color:var(--white); line-height:1.1; margin-bottom:4px; }
+.summary-pack-sub { font-size:.68rem; font-weight:300; color:rgba(232,230,225,.3); margin-bottom:24px; }
+.summary-lines { border-top:1px solid rgba(232,230,225,.06); padding-top:18px; display:flex; flex-direction:column; gap:12px; margin-bottom:18px; }
+.summary-line { display:flex; justify-content:space-between; align-items:center; }
+.summary-line-label { font-size:.68rem; font-weight:300; color:rgba(232,230,225,.35); letter-spacing:.05em; }
+.summary-line-val { font-size:.78rem; font-weight:400; color:var(--pearl); }
+.summary-total { display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid rgba(232,230,225,.1); padding-top:18px; margin-bottom:26px; }
+.summary-total-label { font-size:.6rem; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:rgba(232,230,225,.4); }
+.summary-total-val { font-family:'Cormorant Garamond', serif; font-size:2rem; font-weight:300; color:var(--white); }
+.summary-guarantee { display:flex; align-items:center; gap:8px; font-size:.57rem; font-weight:300; letter-spacing:.12em; text-transform:uppercase; color:rgba(232,230,225,.25); margin-bottom:22px; }
+.summary-guarantee svg { opacity:.4; flex-shrink:0; }
+
+/* ── PAY BUTTON ── */
+.btn-pay {
+  width:100%; display:inline-flex; align-items:center; justify-content:center; gap:12px;
+  background:var(--red); color:#fff;
+  font-family:'Outfit', sans-serif; font-size:.75rem; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase;
+  border:none; padding:18px 40px;
+  cursor:none; position:relative; overflow:hidden;
+  transition:transform .2s, box-shadow .3s;
+  text-decoration:none; display:flex;
+}
+.btn-pay::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent); transform:translateX(-100%); transition:transform .5s; }
+.btn-pay:hover::before { transform:translateX(100%); }
+.btn-pay:hover { transform:translateY(-2px); box-shadow:0 16px 50px rgba(196,18,48,.35); }
+.btn-pay .ripple { position:absolute; border-radius:50%; background:rgba(255,255,255,.2); transform:scale(0); animation:rippleAnim .6s linear; pointer-events:none; }
+@keyframes rippleAnim { to { transform:scale(4); opacity:0; } }
+
+/* secure badges */
+.secure-badges { display:flex; align-items:center; justify-content:center; gap:14px; margin-top:14px; }
+.secure-badge { font-size:.5rem; font-weight:300; letter-spacing:.14em; text-transform:uppercase; color:rgba(232,230,225,.2); display:flex; align-items:center; gap:5px; }
+.secure-badge svg { opacity:.3; }
+
+/* ── SIDE DECO ── */
+.side-deco { position:fixed; left:5%; top:50%; transform:translateY(-50%); z-index:3; display:flex; flex-direction:column; gap:3px; opacity:0; animation:fadeIn 1s ease 1s forwards; }
+.side-deco-line { width:1px; height:60px; background:linear-gradient(to bottom, transparent, rgba(196,18,48,.4), transparent); }
+.side-deco-text { font-size:.5rem; font-weight:300; letter-spacing:.32em; text-transform:uppercase; color:rgba(232,230,225,.12); writing-mode:vertical-rl; margin-top:12px; }
+
+/* ── ANIMATIONS ── */
+@keyframes cardIn { from { opacity:0; transform:translateY(28px) scale(.98); } to { opacity:1; transform:none; } }
+@keyframes fadeIn { to { opacity:1; } }
+
+/* ── RESPONSIVE ── */
+@media (max-width:860px) {
+  .packs-grid { grid-template-columns:1fr; max-width:480px; }
+  .checkout-inner { grid-template-columns:1fr; }
+  .checkout-summary { position:static; }
+  body { cursor:auto; }
+  .cursor,.cursor-wheel,.side-deco { display:none; }
+}
+@media (max-width:640px) {
+  .field-row { grid-template-columns:1fr; gap:0; }
+  .checkout-form-body { padding:26px 18px 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<svg class="cursor-wheel" id="cursorWheel" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="20" cy="20" r="19" stroke="rgba(232,230,225,0.35)" stroke-width="1.5" fill="none"/>
+  <circle cx="20" cy="20" r="14" stroke="rgba(232,230,225,0.12)" stroke-width="5" fill="none"/>
+  <circle cx="20" cy="20" r="11" stroke="rgba(232,230,225,0.45)" stroke-width="1" fill="rgba(20,20,22,0.6)"/>
+  <line x1="20" y1="9"  x2="20" y2="14" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="29.5" y1="14.5" x2="25.7" y2="17.2" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="26"   y1="26"   x2="22.9" y2="23.5" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="14"   y1="26"   x2="17.1" y2="23.5" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10.5" y1="14.5" x2="14.3" y2="17.2" stroke="rgba(232,230,225,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="20" cy="20" r="3" fill="rgba(196,18,48,0.9)"/>
+</svg>
+
+<!-- SPEED LINES -->
+<canvas class="speed-bg" id="speedBg"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-rings"><span></span><span></span><span></span><span></span></div>
+    <span class="nav-wordmark">Audi <span style="opacity:.3;font-weight:200">RSQ8</span></span>
+  </a>
+  <a href="formulaire.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Retour
+  </a>
+</nav>
+
+<!-- SIDE DECO -->
+<div class="side-deco">
+  <div class="side-deco-line"></div>
+  <span class="side-deco-text">RSQ8 · Acquisition</span>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <p class="page-eyebrow">Pré-acquisition RSQ8</p>
+    <h1 class="page-title">Choisissez<br><em>votre essai.</em></h1>
+    <p class="page-sub">Sélectionnez la durée d'essai qui vous correspond.<br>Satisfait ou intégralement remboursé.</p>
+  </div>
+
+  <!-- PACKS -->
+  <div class="packs-grid" id="packsGrid">
+
+    <!-- PACK 1J -->
+    <div class="pack-card" data-pack="1" data-name="Essai 1 Jour" data-price="25" data-days="1">
+      <img class="pack-img"
+        src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=800&q=80&auto=format&fit=crop"
+        alt="Audi RSQ8 — Essai 1 jour"
+        onerror="this.src='https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?w=800'">
+      <div class="pack-body">
+        <p class="pack-duration">Découverte</p>
+        <h2 class="pack-name">1 Jour<br>d'essai</h2>
+        <p class="pack-desc">Prenez le volant pour une journée et ressentez la puissance brute de la RSQ8.</p>
+        <div class="pack-price">
+          <span class="pack-price-cur">€</span>
+          <span class="pack-price-num">25</span>
+          <span class="pack-price-day">/ jour</span>
+        </div>
+        <ul class="pack-perks">
+          <li>Livraison à domicile incluse</li>
+          <li>Assurance tous risques</li>
+          <li>Kilométrage illimité</li>
+          <li>Satisfait ou remboursé</li>
+        </ul>
+        <button class="btn-pack" onclick="selectPack(this)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Sélectionner
+        </button>
+      </div>
+    </div>
+
+    <!-- PACK 3J -->
+    <div class="pack-card" data-pack="3" data-name="Essai 3 Jours" data-price="50" data-days="3">
+      <div class="pack-badge">Populaire</div>
+      <img class="pack-img"
+        src="https://images.unsplash.com/photo-1541443131876-29b17dc0e2e5?w=800&q=80&auto=format&fit=crop"
+        alt="Audi RSQ8 — Essai 3 jours"
+        onerror="this.src='https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?w=800'">
+      <div class="pack-body">
+        <p class="pack-duration">Immersion</p>
+        <h2 class="pack-name">3 Jours<br>d'essai</h2>
+        <p class="pack-desc">Trois jours pour vivre avec la RSQ8 et découvrir chaque facette de son caractère.</p>
+        <div class="pack-price">
+          <span class="pack-price-cur">€</span>
+          <span class="pack-price-num">50</span>
+          <span class="pack-price-day">/ 3 jours</span>
+        </div>
+        <ul class="pack-perks">
+          <li>Livraison à domicile incluse</li>
+          <li>Assurance tous risques</li>
+          <li>Kilométrage illimité</li>
+          <li>Satisfait ou remboursé</li>
+          <li>Accompagnateur expert (J1)</li>
+        </ul>
+        <button class="btn-pack" onclick="selectPack(this)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Sélectionner
+        </button>
+      </div>
+    </div>
+
+    <!-- PACK 7J -->
+    <div class="pack-card" data-pack="7" data-name="Essai 7 Jours" data-price="100" data-days="7">
+      <img class="pack-img"
+        src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80&auto=format&fit=crop"
+        alt="Audi RSQ8 — Essai 7 jours"
+        onerror="this.src='https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?w=800'">
+      <div class="pack-body">
+        <p class="pack-duration">Expérience Complète</p>
+        <h2 class="pack-name">7 Jours<br>d'essai</h2>
+        <p class="pack-desc">Une semaine entière pour être certain que la RSQ8 est faite pour vous.</p>
+        <div class="pack-price">
+          <span class="pack-price-cur">€</span>
+          <span class="pack-price-num">100</span>
+          <span class="pack-price-day">/ semaine</span>
+        </div>
+        <ul class="pack-perks">
+          <li>Livraison à domicile incluse</li>
+          <li>Assurance tous risques</li>
+          <li>Kilométrage illimité</li>
+          <li>Satisfait ou remboursé</li>
+          <li>Accompagnateur expert (J1)</li>
+          <li>Accès piste privée (1h)</li>
+          <li>Déduction sur l'achat final</li>
+        </ul>
+        <button class="btn-pack" onclick="selectPack(this)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Sélectionner
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /packs-grid -->
+
+  <!-- CHECKOUT PANEL -->
+  <div class="checkout-panel" id="checkoutPanel">
+    <div class="checkout-inner">
+
+      <!-- LEFT : payment form -->
+      <div class="checkout-form-card">
+        <div class="checkout-form-body">
+
+          <p class="section-label">Titulaire de la carte</p>
+          <div class="field-row field">
+            <div>
+              <label for="c-prenom">Prénom</label>
+              <input id="c-prenom" type="text" placeholder="Sophie" required>
+            </div>
+            <div>
+              <label for="c-nom">Nom</label>
+              <input id="c-nom" type="text" placeholder="Dupont" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="c-email">E-mail de confirmation</label>
+            <input id="c-email" type="email" placeholder="vous@email.com" required>
+          </div>
+
+          <p class="section-label">Informations bancaires</p>
+          <div class="field">
+            <label for="c-card">Numéro de carte</label>
+            <div class="card-input-wrap">
+              <input id="c-card" type="text" placeholder="0000  0000  0000  0000" maxlength="19" oninput="formatCard(this)" required>
+              <div class="card-icon">
+                <div class="card-chip"></div>
+                <div class="card-chip" style="opacity:.4"></div>
+              </div>
+            </div>
+          </div>
+          <div class="field-row field">
+            <div>
+              <label for="c-exp">Expiration</label>
+              <input id="c-exp" type="text" placeholder="MM / AA" maxlength="7" oninput="formatExp(this)" required>
+            </div>
+            <div>
+              <label for="c-cvv">CVV</label>
+              <input id="c-cvv" type="number" placeholder="•••" min="0" max="9999" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="c-addr">Adresse de facturation</label>
+            <input id="c-addr" type="text" placeholder="12 rue de la Paix, 75001 Paris" required>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT : summary + pay -->
+      <div class="checkout-summary" id="summaryBox">
+        <p class="summary-title">Récapitulatif</p>
+        <h3 class="summary-pack-name" id="sumPackName">—</h3>
+        <p class="summary-pack-sub" id="sumPackSub">Essai RSQ8 · Audi</p>
+        <div class="summary-lines">
+          <div class="summary-line">
+            <span class="summary-line-label">Essai</span>
+            <span class="summary-line-val" id="sumEssai">—</span>
+          </div>
+          <div class="summary-line">
+            <span class="summary-line-label">Livraison à domicile</span>
+            <span class="summary-line-val">Incluse</span>
+          </div>
+          <div class="summary-line">
+            <span class="summary-line-label">Assurance</span>
+            <span class="summary-line-val">Incluse</span>
+          </div>
+        </div>
+        <div class="summary-total">
+          <span class="summary-total-label">Total TTC</span>
+          <span class="summary-total-val" id="sumTotal">—</span>
+        </div>
+        <div class="summary-guarantee">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Satisfait ou intégralement remboursé
+        </div>
+        <a class="btn-pay" href="confirmation.html" id="payBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <span>Payer maintenant</span>
+        </a>
+        <div class="secure-badges">
+          <span class="secure-badge">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Paiement sécurisé SSL
+          </span>
+          <span class="secure-badge">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            3D Secure activé
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /checkout-panel -->
+
+</main>
+
+<script>
+// ── CURSOR
+const cursor = document.getElementById('cursor');
+const wheel  = document.getElementById('cursorWheel');
+if(window.matchMedia('(pointer:fine)').matches && cursor){
+  let mx=0,my=0,rx=0,ry=0,angle=0;
+  document.addEventListener('mousemove',e=>{
+    const dx=e.clientX-mx; mx=e.clientX; my=e.clientY;
+    angle+=dx*.8;
+    wheel.style.transform=`translate(-50%,-50%) rotate(${angle}deg)`;
+  });
+  (function loop(){
+    rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+    wheel.style.left=rx+'px'; wheel.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button,input,select').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ wheel.style.width='52px'; wheel.style.height='52px'; });
+    el.addEventListener('mouseleave',()=>{ wheel.style.width='38px'; wheel.style.height='38px'; });
+  });
+}
+
+// ── SPEED LINES
+(function(){
+  const canvas = document.getElementById('speedBg');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W,H,lines=[];
+  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function spawn(){
+    lines=[];
+    for(let i=0;i<40;i++) lines.push({ x:Math.random()*W, y:Math.random()*H, len:Math.random()*80+20, speed:Math.random()*3+1, opacity:Math.random()*0.04+0.01, w:Math.random()*0.6+0.2 });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    lines.forEach(l=>{
+      const g=ctx.createLinearGradient(l.x,l.y,l.x-l.len,l.y);
+      g.addColorStop(0,`rgba(196,18,48,${l.opacity})`);
+      g.addColorStop(1,'rgba(196,18,48,0)');
+      ctx.beginPath(); ctx.moveTo(l.x,l.y); ctx.lineTo(l.x-l.len,l.y);
+      ctx.strokeStyle=g; ctx.lineWidth=l.w; ctx.stroke();
+      l.x-=l.speed;
+      if(l.x+l.len<0){ l.x=W+l.len; l.y=Math.random()*H; }
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{ resize(); spawn(); });
+  resize(); spawn(); draw();
+})();
+
+// ── PACK SELECTION
+function selectPack(btn){
+  const card = btn.closest('.pack-card');
+  // deselect all
+  document.querySelectorAll('.pack-card').forEach(c=>{
+    c.classList.remove('selected');
+    c.querySelector('.btn-pack').textContent='';
+    const b = c.querySelector('.btn-pack');
+    b.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Sélectionner';
+  });
+  // select this
+  card.classList.add('selected');
+  btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Sélectionné';
+
+  // update summary
+  const name  = card.dataset.name;
+  const price = card.dataset.price;
+  const days  = card.dataset.days;
+
+  document.getElementById('sumPackName').textContent = name;
+  document.getElementById('sumEssai').textContent    = days + (days==='1' ? ' jour' : ' jours');
+  document.getElementById('sumTotal').textContent    = price + ' €';
+
+  // open panel
+  const panel = document.getElementById('checkoutPanel');
+  panel.classList.add('open');
+  setTimeout(()=>{ panel.scrollIntoView({ behavior:'smooth', block:'start' }); }, 80);
+}
+
+// ── CARD FORMAT
+function formatCard(el){
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.replace(/(.{4})/g,'$1  ').trim();
+}
+function formatExp(el){
+  let v = el.value.replace(/\D/g,'').substring(0,4);
+  if(v.length>=3) v = v.slice(0,2) + ' / ' + v.slice(2);
+  el.value = v;
+}
+
+// ── RIPPLE on pay
+document.getElementById('payBtn').addEventListener('click',function(e){
+  const r=this.getBoundingClientRect();
+  const rpl=document.createElement('span');
+  rpl.classList.add('ripple');
+  const size=Math.max(r.width,r.height);
+  rpl.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-r.left-size/2}px;top:${e.clientY-r.top-size/2}px`;
+  this.appendChild(rpl);
+  setTimeout(()=>rpl.remove(),700);
+});
+</script>
+</body>
+</html>
